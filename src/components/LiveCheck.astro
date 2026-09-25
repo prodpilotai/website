@@ -1,0 +1,134 @@
+---
+import demo from '../data/demo.json';
+
+// The demo, checked from the visitor's browser: three of the questions ProdPush
+// stage 7 asks of every deployment. Rendered first from the dated capture, so
+// the section is true with no script; the script then asks again, live.
+const at = (path: string) => demo.endpoints.find((e) => e.path === path)!;
+const checks = [
+	{ id: 'root', path: '/', name: 'The service answers', expect: 'status 200' },
+	{ id: 'health', path: '/health', name: 'The health path says ok', expect: '{"status":"ok"}' },
+	{ id: 'api', path: '/api/v1', name: 'The API answers without a 404 or 500', expect: 'not 404, not 500' },
+];
+const security = [
+	'content-security-policy',
+	'strict-transport-security',
+	'x-content-type-options',
+	'x-frame-options',
+	'referrer-policy',
+] as const;
+const present = security.filter((h) => (demo.headers as Record<string, string | null>)[h]);
+---
+
+<div class="live" data-live data-base={demo.base}>
+	<ol class="checklist">
+		{
+			checks.map((c) => {
+				const got = at(c.path);
+				return (
+					<li class="check" data-state={got.status === 200 ? 'verified' : 'failed'} data-check={c.id} data-path={c.path}>
+						<span class="light" aria-hidden="true" />
+						<div>
+							<h3>{c.name}</h3>
+							<p>
+								<code>GET {c.path}</code> <span data-detail>{`answered ${got.status} on ${demo.captured}`}</span>
+							</p>
+						</div>
+						<span class="rule" aria-hidden="true">{c.expect}</span>
+						<span class="verdict" data-verdict>{got.status === 200 ? 'verified' : 'failed'}</span>
+					</li>
+				);
+			})
+		}
+		<li class="check" data-state={present.length === security.length ? 'verified' : 'failed'}>
+			<span class="light" aria-hidden="true" />
+			<div>
+				<h3>Security headers are present</h3>
+				<p>
+					{present.map((h, i) => (<><code>{h}</code>{i < present.length - 1 ? ' ' : ''}</>))}
+					<br />
+					Captured on {demo.captured}. A browser cannot read these headers from another site, so this row is
+					not checked live.
+				</p>
+			</div>
+			<span class="rule" aria-hidden="true">{present.length} of {security.length}</span>
+			<span class="verdict">captured</span>
+		</li>
+	</ol>
+	<p class="live-status" data-status role="status">Showing the capture from {demo.captured}.</p>
+	<div class="actions">
+		<button class="button" type="button" data-run>Check it again now</button>
+		<a class="button" href={demo.base}>Open the demo</a>
+	</div>
+</div>
+
+<script>
+	const live = document.querySelector<HTMLElement>('[data-live]');
+	if (live) {
+		const base = live.dataset.base!;
+		const status = live.querySelector<HTMLElement>('[data-status]')!;
+		const button = live.querySelector<HTMLButtonElement>('[data-run]')!;
+		const rows = [...live.querySelectorAll<HTMLElement>('[data-check]')];
+		let busy = false;
+
+		function mark(row: HTMLElement, state: string, detail: string) {
+			row.dataset.state = state;
+			row.querySelector<HTMLElement>('[data-verdict]')!.textContent = state;
+			row.querySelector<HTMLElement>('[data-detail]')!.textContent = detail;
+		}
+
+		async function ask(row: HTMLElement) {
+			const started = performance.now();
+			try {
+				const response = await fetch(base + row.dataset.path, {
+					cache: 'no-store',
+					signal: AbortSignal.timeout(90_000),
+				});
+				const ms = Math.round(performance.now() - started);
+				let ok = response.status === 200;
+				if (row.dataset.check === 'health') {
+					const body = await response.json().catch(() => ({}));
+					ok = ok && body.status === 'ok';
+				}
+				if (row.dataset.check === 'api') ok = response.status !== 404 && response.status < 500;
+				mark(row, ok ? 'verified' : 'failed', `answered ${response.status} in ${ms} ms`);
+				return ok;
+			} catch {
+				mark(row, 'failed', 'no answer within 90 seconds');
+				return false;
+			}
+		}
+
+		async function run() {
+			if (busy) return;
+			busy = true;
+			button.disabled = true;
+			rows.forEach((row) => mark(row, 'checking', 'checking'));
+			status.textContent = 'Checking the demo from your browser.';
+			const slow = setTimeout(() => {
+				status.textContent =
+					"Waking the service. It runs on Render's free plan, which sleeps when idle, so the first request can take up to a minute.";
+			}, 4000);
+			// The first request wakes the service; the others follow it.
+			const first = await ask(rows[0]);
+			const rest = await Promise.all(rows.slice(1).map(ask));
+			clearTimeout(slow);
+			const passed = [first, ...rest].filter(Boolean).length;
+			status.textContent = `Checked live just now: ${passed} of ${rows.length} verified.`;
+			button.disabled = false;
+			busy = false;
+		}
+
+		button.addEventListener('click', run);
+		const seen = new IntersectionObserver(
+			(entries) => {
+				if (entries.some((e) => e.isIntersecting)) {
+					seen.disconnect();
+					run();
+				}
+			},
+			{ threshold: 0.4 }
+		);
+		seen.observe(live);
+	}
+</script>

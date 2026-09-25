@@ -1,0 +1,339 @@
+{
+  "sample": "node_express_insecure",
+  "stack": "node_express",
+  "prodpilot": "1.0.0",
+  "command": "python tests/pipeline.py TRACE.json node_express_insecure",
+  "rules": [
+    {
+      "id": "ENV-001",
+      "priority": "P0",
+      "weight": 32,
+      "fix": "DYNAMIC-PARAMETRIC",
+      "text": ".env.example must cover every environment key the code reads"
+    },
+    {
+      "id": "ENV-002",
+      "priority": "P0",
+      "weight": 32,
+      "fix": "STATIC",
+      "text": "the listening port must be read from the environment"
+    },
+    {
+      "id": "SCR-001",
+      "priority": "P0",
+      "weight": 32,
+      "fix": "STATIC",
+      "text": ".gitignore must exclude .env and .env.production"
+    },
+    {
+      "id": "SCR-002",
+      "priority": "P0",
+      "weight": 32,
+      "fix": "DYNAMIC-PARAMETRIC",
+      "text": "no API key, token or password literal may appear in source"
+    },
+    {
+      "id": "SEC-001",
+      "priority": "P0",
+      "weight": 32,
+      "fix": "STATIC",
+      "text": "the Dockerfile must run the process as a non-root user"
+    },
+    {
+      "id": "SEC-002",
+      "priority": "P0",
+      "weight": 32,
+      "fix": "STATIC",
+      "text": "helmet must be registered before any route definition"
+    },
+    {
+      "id": "SEC-003",
+      "priority": "P0",
+      "weight": 32,
+      "fix": "STATIC",
+      "text": "the CORS origin must come from an environment variable, not a wildcard"
+    },
+    {
+      "id": "SEC-004",
+      "priority": "P0",
+      "weight": 32,
+      "fix": "STATIC",
+      "text": "Content Security Policy and HTTPS redirect headers must be set"
+    },
+    {
+      "id": "BLD-001",
+      "priority": "P1",
+      "weight": 16,
+      "fix": "DYNAMIC-PARAMETRIC",
+      "text": "Dockerfile must be present at the project root"
+    },
+    {
+      "id": "BLD-002",
+      "priority": "P1",
+      "weight": 16,
+      "fix": "STATIC",
+      "text": ".dockerignore must be present at the project root"
+    },
+    {
+      "id": "BLD-003",
+      "priority": "P1",
+      "weight": 16,
+      "fix": "DYNAMIC-PARAMETRIC",
+      "text": "a GitHub Actions workflow must be present under .github/workflows"
+    },
+    {
+      "id": "BLD-004",
+      "priority": "P1",
+      "weight": 16,
+      "fix": "DYNAMIC-PARAMETRIC",
+      "text": "package.json must declare a start script that runs without a dev watcher"
+    },
+    {
+      "id": "BLD-005",
+      "priority": "P1",
+      "weight": 16,
+      "fix": "STATIC",
+      "text": "package.json must pin the Node engine to 20 LTS"
+    },
+    {
+      "id": "BLD-006",
+      "priority": "P1",
+      "weight": 16,
+      "fix": "DYNAMIC-PARAMETRIC",
+      "text": "the Dockerfile must use a multi-stage build"
+    },
+    {
+      "id": "CON-001",
+      "priority": "P1",
+      "weight": 16,
+      "fix": "DYNAMIC-PARAMETRIC",
+      "text": "database credentials must be read from the environment"
+    },
+    {
+      "id": "CON-002",
+      "priority": "P1",
+      "weight": 16,
+      "fix": "DYNAMIC-PARAMETRIC",
+      "text": "database access must use a connection pool"
+    },
+    {
+      "id": "API-001",
+      "priority": "P2",
+      "weight": 8,
+      "fix": "STATIC",
+      "text": "public routes must be rate limited"
+    },
+    {
+      "id": "API-002",
+      "priority": "P2",
+      "weight": 8,
+      "fix": "DYNAMIC-PARAMETRIC",
+      "text": "routes must be mounted under a versioned prefix"
+    },
+    {
+      "id": "API-003",
+      "priority": "P2",
+      "weight": 8,
+      "fix": "STATIC",
+      "text": "a centralised error handler must return a consistent shape and leak no stack traces"
+    },
+    {
+      "id": "STR-001",
+      "priority": "P3",
+      "weight": 4,
+      "fix": "DYNAMIC-DELEGATED",
+      "text": "database calls must live in a service layer rather than inside controllers"
+    },
+    {
+      "id": "STR-002",
+      "priority": "P3",
+      "weight": 4,
+      "fix": "DYNAMIC-DELEGATED",
+      "text": "business logic must live in services rather than inline in route handlers"
+    },
+    {
+      "id": "OBS-001",
+      "priority": "P4",
+      "weight": 2,
+      "fix": "STATIC",
+      "text": "a health check endpoint must be exposed"
+    },
+    {
+      "id": "OBS-002",
+      "priority": "P4",
+      "weight": 2,
+      "fix": "STATIC",
+      "text": "structured logging must be configured rather than bare console output"
+    },
+    {
+      "id": "OBS-003",
+      "priority": "P4",
+      "weight": 2,
+      "fix": "STATIC",
+      "text": "the process must expose monitoring hooks the hosting platform can scrape"
+    },
+    {
+      "id": "OBS-004",
+      "priority": "P4",
+      "weight": 2,
+      "fix": "STATIC",
+      "text": "SIGTERM must be handled so the server drains connections before exit"
+    },
+    {
+      "id": "GIT-001",
+      "priority": "P5",
+      "weight": 1,
+      "fix": "STATIC",
+      "text": ".gitignore must be present at the project root"
+    },
+    {
+      "id": "GIT-002",
+      "priority": "P5",
+      "weight": 1,
+      "fix": "STATIC",
+      "text": ".gitignore must exclude node_modules"
+    },
+    {
+      "id": "GIT-003",
+      "priority": "P5",
+      "weight": 1,
+      "fix": "DYNAMIC-DELEGATED",
+      "text": "no secret may appear anywhere in the committed Git history"
+    }
+  ],
+  "start": {
+    "score": 13,
+    "failing": [
+      "API-001",
+      "API-002",
+      "API-003",
+      "BLD-001",
+      "BLD-002",
+      "BLD-003",
+      "BLD-005",
+      "BLD-006",
+      "ENV-002",
+      "GIT-001",
+      "GIT-002",
+      "OBS-001",
+      "OBS-002",
+      "OBS-003",
+      "OBS-004",
+      "SCR-001",
+      "SEC-001",
+      "SEC-002",
+      "SEC-003",
+      "SEC-004",
+      "STR-001",
+      "STR-002"
+    ],
+    "skipped": [
+      "CON-001",
+      "CON-002",
+      "ENV-001"
+    ],
+    "critical": [
+      "ENV-002",
+      "SCR-001",
+      "SEC-001",
+      "SEC-002",
+      "SEC-003",
+      "SEC-004"
+    ]
+  },
+  "steps": [
+    {
+      "rule": "ENV-002",
+      "score": 22
+    },
+    {
+      "rule": "SEC-002",
+      "score": 31
+    },
+    {
+      "rule": "SEC-003",
+      "score": 40
+    },
+    {
+      "rule": "SEC-004",
+      "score": 49
+    },
+    {
+      "rule": "BLD-001",
+      "score": 53
+    },
+    {
+      "rule": "BLD-002",
+      "score": 58
+    },
+    {
+      "rule": "BLD-003",
+      "score": 62
+    },
+    {
+      "rule": "BLD-005",
+      "score": 66
+    },
+    {
+      "rule": "BLD-006",
+      "score": 71
+    },
+    {
+      "rule": "API-001",
+      "score": 73
+    },
+    {
+      "rule": "API-002",
+      "score": 75
+    },
+    {
+      "rule": "OBS-001",
+      "score": 76
+    },
+    {
+      "rule": "OBS-002",
+      "score": 76
+    },
+    {
+      "rule": "OBS-003",
+      "score": 77
+    },
+    {
+      "rule": "OBS-004",
+      "score": 77
+    },
+    {
+      "rule": "GIT-001",
+      "score": 78
+    },
+    {
+      "rule": "GIT-002",
+      "score": 78
+    },
+    {
+      "rule": "ENV-001",
+      "score": 80
+    },
+    {
+      "rule": "SCR-001",
+      "score": 88
+    },
+    {
+      "rule": "SEC-001",
+      "score": 96
+    }
+  ],
+  "end": {
+    "score": 96,
+    "failing": [
+      "API-003",
+      "STR-001",
+      "STR-002"
+    ],
+    "skipped": [
+      "CON-001",
+      "CON-002"
+    ],
+    "gate": "score 96 meets the threshold of 90 with no critical failures, and the model estimates a 82% chance of deploying, at or above its operating point of 37%"
+  }
+}

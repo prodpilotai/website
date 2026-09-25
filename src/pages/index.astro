@@ -1,0 +1,435 @@
+---
+import Landing from '../layouts/Landing.astro';
+import Hero from '../components/Hero.astro';
+import Command from '../components/Command.astro';
+import LiveCheck from '../components/LiveCheck.astro';
+import reference from '../data/reference.json';
+import { facts } from '../data/facts';
+import { demo, email, install, issues, license, pypi, repo, securityReport, siteUrl, team } from '../site.mjs';
+
+const percent = Math.round(reference.determinism_ratio * 100);
+const grouped = (n: number) => n.toLocaleString('en-US');
+
+const title = 'ProdPilot: the pre-flight checklist for AI-built web apps';
+const description = `ProdPilot audits a Node.js with Express or React with Vite project against ${reference.rules} production rules, has your editor's own agent fix what fails, verifies every fix itself, and deploys to Render only what clears the gate.`;
+
+const jsonLd = [
+	{
+		'@type': 'SoftwareApplication',
+		name: 'ProdPilot',
+		description,
+		applicationCategory: 'DeveloperApplication',
+		operatingSystem: 'Windows, macOS, Linux',
+		softwareVersion: reference.version,
+		license: 'https://opensource.org/licenses/MIT',
+		downloadUrl: pypi,
+		url: siteUrl,
+		codeRepository: repo,
+		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+		author: team.map((name) => ({ '@type': 'Person', name })),
+	},
+];
+
+// The six failures, each one a rule in the catalog.
+const gap = [
+	{
+		rule: 'SCR-002',
+		anchor: 'secrets',
+		priority: 'P0',
+		title: 'An API key written into the source',
+		detail: 'Anyone who can read the repository can read the key, and it stays in the Git history after you delete it.',
+	},
+	{
+		rule: 'SEC-002',
+		anchor: 'security',
+		priority: 'P0',
+		title: 'No security headers',
+		detail: 'Helmet is not registered before the routes, so every response goes out without them.',
+	},
+	{
+		rule: 'ENV-002',
+		anchor: 'environment',
+		priority: 'P0',
+		title: 'A hardcoded port',
+		detail: 'The host decides which port the app listens on. Code that picks its own is guessing.',
+	},
+	{
+		rule: 'BLD-001',
+		anchor: 'build',
+		priority: 'P1',
+		title: 'No Dockerfile',
+		detail: 'Nothing says how to build and start the app anywhere except the machine it was written on.',
+	},
+	{
+		rule: 'OBS-001',
+		anchor: 'observability',
+		priority: 'P4',
+		title: 'No health check',
+		detail: 'The platform cannot tell a service that is running from one that is stuck.',
+	},
+	{
+		rule: 'BLD-003',
+		anchor: 'build',
+		priority: 'P1',
+		title: 'No pipeline',
+		detail: 'Every deploy is a manual push, and nothing runs before it reaches users.',
+	},
+];
+
+const layers = [
+	{
+		n: 0,
+		name: 'Detect',
+		text: 'Reads package.json and the file tree, names the stack, and loads its production blueprint. An ambiguous project is refused, not guessed.',
+	},
+	{
+		n: 1,
+		name: 'Audit',
+		text: `Checks ${reference.by_stack.node_express} rules for Express or ${reference.by_stack.react_vite} for React, and scores the project from 0 to 100.`,
+	},
+	{
+		n: 2,
+		name: 'Fix',
+		text: "Hands your editor's agent one fix at a time, then runs that rule's own checker again to see whether it worked.",
+	},
+	{
+		n: 3,
+		name: 'Gate',
+		text: 'Opens only at a score of 90 or more, with no critical rule failing, and a deployability estimate at or above its operating point.',
+	},
+	{
+		n: 4,
+		name: 'ProdPush',
+		text: 'Builds in Docker on your machine, pushes, deploys to Render, smoke tests the live service and wires a GitHub Actions pipeline.',
+	},
+];
+---
+
+<Landing title={title} description={description} jsonLd={jsonLd}>
+	<header class="topbar">
+		<a class="brand" href="/" aria-label="ProdPilot home">
+			<img src="/favicon.svg" alt="" width="28" height="28" />
+			<span>ProdPilot</span>
+		</a>
+		<nav aria-label="Main">
+			<a href="/docs/getting-started/introduction/">Docs</a>
+			<a href={repo}>GitHub</a>
+			<a href={pypi}>PyPI</a>
+		</nav>
+	</header>
+
+	<main id="main">
+		<section class="hero" aria-labelledby="hero-title">
+			<div class="hero-copy">
+				<p class="eyebrow">For Node.js with Express and React with Vite</p>
+				<h1 id="hero-title">It works on localhost. <span>That was never the question.</span></h1>
+				<p class="lede">
+					ProdPilot is the pre-flight checklist your AI agent never ran: it audits your project against
+					{' '}{reference.rules} production rules, has your editor's agent fix what fails, checks every fix
+					itself, and deploys only what clears the gate.
+				</p>
+				<Command command={install} label="Copy the install command" />
+				<div class="actions">
+					<a class="button primary" href="/docs/getting-started/introduction/">Read the docs</a>
+					<a class="button" href={repo}>View on GitHub</a>
+				</div>
+				<p class="fine">Free and open source under the MIT license. Python 3.11 to 3.14.</p>
+			</div>
+			<Hero />
+		</section>
+
+		<section class="block" aria-labelledby="gap-title">
+			<p class="eyebrow">The gap</p>
+			<h2 id="gap-title">Six things localhost never checks</h2>
+			<p class="intro">
+				You build fast with AI tools, and the code works. What nobody checks is the layer underneath it: the
+				part your laptop fills in without asking. A real server fills in none of it. Each of these is a
+				rule ProdPilot checks.
+			</p>
+			<ol class="checklist" data-checklist>
+				{
+					gap.map((g) => (
+						<li class="check" data-state="failed">
+							<span class="light" aria-hidden="true" />
+							<div>
+								<h3>{g.title}</h3>
+								<p>{g.detail}</p>
+							</div>
+							<a class="rule" href={`/docs/reference/rules/#${g.anchor}`}>
+								{g.rule} <span class="prio">{g.priority}</span>
+							</a>
+							<span class="verdict">
+								<span class="when-failed">
+									<span class="sr-only">Status: </span>fails in production
+								</span>
+								<span class="when-checking" aria-hidden="true">checking</span>
+							</span>
+						</li>
+					))
+				}
+			</ol>
+		</section>
+
+		<section class="block" aria-labelledby="path-title">
+			<p class="eyebrow">How it works</p>
+			<h2 id="path-title">The flight path</h2>
+			<p class="intro">
+				Five layers, always in this order. Nothing moves to the next layer until the one before it holds.
+			</p>
+			<ol class="path">
+				{
+					layers.map((l) => (
+						<li>
+							<span class="waypoint" aria-hidden="true">{l.n}</span>
+							<h3>
+								<span class="sr-only">Layer {l.n}: </span>
+								{l.name}
+							</h3>
+							<p>{l.text}</p>
+						</li>
+					))
+				}
+			</ol>
+			<p class="more"><a href="/docs/concepts/five-layers/">The five layers in detail</a></p>
+		</section>
+
+		<section class="block" aria-labelledby="why-title">
+			<p class="eyebrow">Why it is different</p>
+			<h2 id="why-title">Nothing ships on trust</h2>
+			<div class="why">
+				<article>
+					<h3>It runs no model of its own</h3>
+					<p>
+						ProdPilot calls no AI service. The agent already in your editor does the writing. ProdPilot decides
+						what to write and whether it worked.
+					</p>
+					<a href="/docs/concepts/security/#what-leaves-your-machine">What leaves your machine</a>
+				</article>
+				<article>
+					<h3>{percent} percent of fixes need no model at all</h3>
+					<p>
+						{reference.deterministic} of the {reference.rules} rules come with the exact change to make, either fixed
+						in advance or computed from values read out of your project. Only {reference.by_fix_type['DYNAMIC-DELEGATED']}
+						ask the agent to write code, inside limits ProdPilot sets.
+					</p>
+					<a href="/docs/concepts/fix-types/">Fix types</a>
+				</article>
+				<article>
+					<h3>It never takes the agent's word</h3>
+					<p>
+						When the agent reports a fix, the report is recorded and set aside. The rule's own checker runs again
+						on the files on disk and decides. A fix that breaks a rule that passed before it is undone.
+					</p>
+					<a href="/docs/concepts/verification/">Independent verification</a>
+				</article>
+			</div>
+		</section>
+
+		<section class="block" aria-labelledby="log-title">
+			<p class="eyebrow">Proof</p>
+			<h2 id="log-title">The flight log</h2>
+			<p class="intro">Every figure links to the page where it was measured.</p>
+			<table class="log">
+				<caption class="sr-only">Measured results, each with its source</caption>
+				<thead>
+					<tr>
+						<th scope="col">Reading</th>
+						<th scope="col">Value</th>
+						<th scope="col">Source</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="row">Production rules checked</th>
+						<td class="value">{reference.rules}</td>
+						<td><a href="/docs/reference/rules/">Rule catalog</a></td>
+					</tr>
+					<tr>
+						<th scope="row">Rules fixed with no model writing anything</th>
+						<td class="value">{reference.deterministic} of {reference.rules}, {percent}%</td>
+						<td><a href="/docs/results/metrics/#determinism-ratio">Metrics</a></td>
+					</tr>
+					<tr>
+						<th scope="row">Real Render deployments behind the gate's model</th>
+						<td class="value">{facts.deployments.total}, of which {facts.deployments.live} went live</td>
+						<td><a href={facts.deployments.source}>Evaluation</a></td>
+					</tr>
+					<tr>
+						<th scope="row">IDEs verified with all five tools and both contract forms</th>
+						<td class="value">{facts.ides.count}</td>
+						<td><a href={facts.ides.source}>Compatibility matrix</a></td>
+					</tr>
+					<tr>
+						<th scope="row">Automated tests at version {reference.version}</th>
+						<td class="value">{grouped(facts.tests.collected)}, passing on Linux, macOS and Windows</td>
+						<td><a href={facts.tests.source}>Contributing</a></td>
+					</tr>
+					<tr>
+						<th scope="row">Live demo, deployed by ProdPilot</th>
+						<td class="value"><a href={demo}>prodpilot-demo.onrender.com</a></td>
+						<td><a href="/docs/getting-started/introduction/#see-it-running">About the demo</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+		<section class="block" aria-labelledby="live-title">
+			<p class="eyebrow">Live check</p>
+			<h2 id="live-title">The demo, checked from your browser</h2>
+			<p class="intro">
+				A small Express API that ProdPilot audited, fixed and deployed to Render. Your browser asks it three of
+				the questions the <a href="/docs/prodpush/smoke-test/">post-deploy smoke test</a> asks every deployment,
+				right now.
+			</p>
+			<LiveCheck />
+		</section>
+
+		<section class="block" aria-labelledby="ide-title">
+			<p class="eyebrow">Works with</p>
+			<h2 id="ide-title">Three editors, verified</h2>
+			<p class="intro">
+				Recorded in each editor on 14 September 2026. They all run the same five tools. What differs is how
+				each one is set up and when it asks before a tool runs.
+			</p>
+			<table class="log ides">
+				<thead>
+					<tr>
+						<th scope="col">Editor</th>
+						<th scope="col">Version tested</th>
+						<th scope="col">Connect it with</th>
+						<th scope="col">Asks before a tool runs</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="row"><a href="/docs/getting-started/vscode/">VS Code, GitHub Copilot agent</a></th>
+						<td>1.137.0</td>
+						<td><code>prodpilot connect vscode</code></td>
+						<td>Before each tool's first call; can be allowed for the session</td>
+					</tr>
+					<tr>
+						<th scope="row"><a href="/docs/getting-started/cursor/">Cursor, Agent</a></th>
+						<td>3.20.17</td>
+						<td><code>prodpilot connect cursor</code></td>
+						<td>Not on its fresh install default</td>
+					</tr>
+					<tr>
+						<th scope="row"><a href="/docs/getting-started/windsurf/">Windsurf, now Devin</a></th>
+						<td>3.10.23</td>
+						<td><code>prodpilot connect devin --project PATH</code></td>
+						<td>Before every call</td>
+					</tr>
+				</tbody>
+			</table>
+			<p class="more">
+				Windsurf is now distributed as Devin, and it cannot start ProdPilot from the configuration VS Code and
+				Cursor use, so it gets a file of its own. <a href="/docs/results/compatibility/">Full compatibility record</a>
+			</p>
+		</section>
+
+		<section class="block limits" aria-labelledby="limits-title">
+			<p class="eyebrow">Honest limits</p>
+			<h2 id="limits-title">What it does not do</h2>
+			<ul>
+				<li>
+					<strong>Two stacks.</strong> Node.js with Express, and React with Vite. Anything else is reported as
+					unrecognized rather than guessed.
+				</li>
+				<li><strong>One provider.</strong> Render is the only deployment target.</li>
+				<li>
+					<strong>Six fixes are written by your agent.</strong> ProdPilot verifies each one, but how often a
+					live agent's change passes on the first try has not been measured yet.
+				</li>
+				<li>
+					<strong>Your editor decides when to ask.</strong> On Cursor's fresh install default nothing in the
+					editor stops the agent calling the deploy tool; only the tool's own instruction asks it to confirm
+					with you.
+				</li>
+				<li>
+					<strong>Not yet observed end to end on a live service:</strong> a deploy started by an IDE agent, and
+					the generated workflow redeploying from GitHub Actions.
+				</li>
+				<li>
+					<strong>It needs your machine.</strong> Docker running, Node.js 20 or later, git, a GitHub token and a
+					Render API key.
+				</li>
+			</ul>
+			<p class="more"><a href="/docs/help/limitations/">All known limitations</a></p>
+		</section>
+
+		<section class="block" aria-labelledby="start-title">
+			<p class="eyebrow">Get started</p>
+			<h2 id="start-title">Three commands</h2>
+			<ol class="steps">
+				<li>
+					<h3>Install</h3>
+					<Command command={install} label="Copy the install command" />
+				</li>
+				<li>
+					<h3>Store your GitHub token and Render API key</h3>
+					<Command command="prodpilot setup" label="Copy the setup command" />
+				</li>
+				<li>
+					<h3>Register it with your editor</h3>
+					<Command command="prodpilot connect vscode" label="Copy the connect command" />
+					<p class="fine">Or <code>cursor</code>, or <code>devin --project PATH</code>.</p>
+				</li>
+			</ol>
+			<p class="more">
+				Then run <code>prodpilot doctor</code> and ask your agent: "Use ProdPilot to audit this project and fix
+				what it reports, one rule at a time." <a href="/docs/getting-started/quickstart/">Quickstart</a>
+			</p>
+		</section>
+
+		<section class="block contact" aria-labelledby="contact-title">
+			<p class="eyebrow">Contact</p>
+			<h2 id="contact-title">Questions, bugs and security reports</h2>
+			<ul>
+				<li><strong>Email</strong> <a href={`mailto:${email}`}>{email}</a></li>
+				<li><strong>Bugs and requests</strong> <a href={issues}>GitHub Issues</a></li>
+				<li>
+					<strong>Security</strong> Report a vulnerability privately through the repository's
+					{' '}<a href={securityReport}>Security tab</a>, never in a public issue.
+				</li>
+			</ul>
+		</section>
+	</main>
+
+	<footer class="footer">
+		<nav aria-label="Footer">
+			<a href={repo}>GitHub</a>
+			<a href={pypi}>PyPI</a>
+			<a href="/docs/getting-started/introduction/">Docs</a>
+			<a href={`mailto:${email}`}>Contact</a>
+			<a href={license}>MIT License</a>
+		</nav>
+		<p>Built by {team.slice(0, -1).join(', ')} and {team.at(-1)}.</p>
+		<p class="fine">ProdPilot {reference.version}</p>
+	</footer>
+</Landing>
+
+<script>
+	// The gap checklist settles row by row as it scrolls into view: each rule is
+	// checked, amber, then shown failing, red.
+	// Rows render failing, which is the truth with or without this script. Rows
+	// still below the fold are set to checking so they settle as they arrive.
+	const rows = document.querySelectorAll<HTMLElement>('[data-checklist] .check');
+	const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	if (!still && 'IntersectionObserver' in window) {
+		rows.forEach((row) => {
+			if (row.getBoundingClientRect().top > window.innerHeight) row.dataset.state = 'checking';
+		});
+		const seen = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					const row = entry.target as HTMLElement;
+					seen.unobserve(row);
+					setTimeout(() => (row.dataset.state = 'failed'), 650);
+				});
+			},
+			{ threshold: 0.6 }
+		);
+		rows.forEach((row) => seen.observe(row));
+	}
+</script>

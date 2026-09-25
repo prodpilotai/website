@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-09-25",
+  "rules": 50,
+  "by_stack": {
+    "node_express": 28,
+    "react_vite": 22
+  },
+  "by_fix_type": {
+    "DYNAMIC-PARAMETRIC": 16,
+    "STATIC": 28,
+    "DYNAMIC-DELEGATED": 6
+  },
+  "deterministic": 44,
+  "determinism_ratio": 0.88,
+  "tools": [
+    "prodpilot_ping",
+    "prodpilot_detect_stack",
+    "prodpilot_fix_instruction",
+    "prodpilot_fix_applied",
+    "prodpilot_deploy"
+  ]
+}

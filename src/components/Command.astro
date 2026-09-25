@@ -1,0 +1,37 @@
+---
+// A shell command with a button that copies it. The command stays selectable
+// text, so it can be copied by hand where the clipboard is unavailable.
+interface Props {
+	command: string;
+	label?: string;
+}
+const { command, label = 'Copy command' } = Astro.props;
+---
+
+<div class="command">
+	<code><span class="prompt" aria-hidden="true">$</span>{command}</code>
+	<button type="button" class="copy" data-copy={command} aria-label={`${label}: ${command}`}>
+		<span data-copy-label>Copy</span>
+	</button>
+</div>
+
+<script>
+	document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((button) => {
+		if (button.dataset.bound) return;
+		button.dataset.bound = 'yes';
+		const label = button.querySelector<HTMLElement>('[data-copy-label]')!;
+		button.addEventListener('click', async () => {
+			try {
+				await navigator.clipboard.writeText(button.dataset.copy!);
+				label.textContent = 'Copied';
+				button.dataset.done = 'yes';
+			} catch {
+				label.textContent = 'Select to copy';
+			}
+			setTimeout(() => {
+				label.textContent = 'Copy';
+				delete button.dataset.done;
+			}, 1800);
+		});
+	});
+</script>
