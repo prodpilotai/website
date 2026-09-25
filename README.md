@@ -1,6 +1,6 @@
 # ProdPilot website
 
-The public site for [ProdPilot](https://github.com/prodpilotai/ProdPilot): the landing page at `/` and the product documentation under `/docs/`. Built with [Astro](https://astro.build) and [Starlight](https://starlight.astro.build), output as static files, deployed to Cloudflare Pages.
+The public site for [ProdPilot](https://github.com/prodpilotai/ProdPilot): the landing page at `/` and the product documentation under `/docs/`. Built with [Astro](https://astro.build) and [Starlight](https://starlight.astro.build), output as static files, served by Cloudflare Workers static assets.
 
 This repository holds the site only. The product lives in [prodpilotai/ProdPilot](https://github.com/prodpilotai/ProdPilot).
 
@@ -38,7 +38,7 @@ src/
   sidebar.mjs           the documentation sidebar
   site.mjs              site URL, links, contact, team
 astro.config.mjs
-wrangler.toml           Cloudflare Pages output directory
+wrangler.toml           Cloudflare deploy config: serve dist as static assets
 ```
 
 ## Generated pages
@@ -64,42 +64,40 @@ The hero replays a recorded run of the fix loop. `scripts/gen_hero.py TRACE.json
 
 Every number on the landing page links to the documentation page that states it, and every documentation page takes its figures from the product repository's own records: `docs/metrics.md`, `docs/evaluation.md`, `docs/compatibility.md` and `docs/pipeline.md`. Figures that do not come from the package are in `src/data/facts.ts`, each with its source.
 
-## Deploying to Cloudflare Pages
+## Deploying to Cloudflare
 
-The site is static, and `public/_headers` and `public/_redirects` are Cloudflare Pages files.
+The site is served by Cloudflare Workers static assets. There is no Worker script: every request is answered from `dist`, with `public/_headers`, `public/_redirects` and the 404 page applied. `wrangler.toml` says so.
 
 ### From the dashboard, recommended
 
 1. Push this repository to GitHub.
-2. In the Cloudflare dashboard, open **Workers and Pages**, choose **Create**, then **Pages**, then **Connect to Git**, and pick the repository.
+2. In the Cloudflare dashboard, open **Workers and Pages**, choose **Create**, then **Import a repository**, and pick it.
 3. Set the build:
-   - Framework preset: **Astro**
    - Build command: `npm run build`
-   - Build output directory: `dist`
-4. Under **Environment variables**, add `SITE_URL` set to the address the site will be served from, for example `https://prodpilot.pages.dev`. Canonical links, the sitemap and the social image URLs are built from it. Without it they default to `https://prodpilot.pages.dev`.
-5. Save and deploy. Every push to the production branch redeploys, and pull requests get preview URLs.
+   - Deploy command: `npx wrangler deploy`
+4. Under the Worker's **Settings**, **Build**, **Variables and secrets**, add `SITE_URL` set to the address the site is served from, for example `https://<worker>.<account>.workers.dev`. Canonical links, the sitemap and the social image URLs are built from it; without it they fall back to a placeholder.
+5. Save and deploy. Every push to `main` redeploys.
 
-The Node.js version comes from `.node-version`.
+Workers Builds replaces the `name` in `wrangler.toml` with the connected Worker's own name, so the two do not need to match. The Node.js version comes from `.node-version`.
 
 ### From the command line
 
 ```bash
 npm run build
-npx wrangler pages deploy
+npx wrangler deploy
 ```
 
-`wrangler.toml` names `dist` as the output directory. Wrangler asks you to log in the first time.
+Wrangler asks you to log in the first time. `npx wrangler dev` serves `dist` locally the way Cloudflare will, headers and redirects included.
 
 ### Attaching a custom domain
 
 No custom domain is set yet. To attach one:
 
-1. In the Pages project, open **Custom domains** and choose **Set up a custom domain**.
-2. Enter the domain, for example `prodpilot.dev` or `www.prodpilot.dev`.
-3. If the domain's DNS is on Cloudflare, confirm the record it proposes. Otherwise add the `CNAME` record it shows at your DNS provider, pointing the name at `<project>.pages.dev`. An apex domain needs its DNS on Cloudflare.
-4. Wait for the domain to show **Active**. Cloudflare issues the certificate.
-5. Change `SITE_URL` to the new address, for example `https://prodpilot.dev`, and redeploy, so canonical links, the sitemap and social images use it.
-6. Submit `https://<domain>/sitemap-index.xml` in Google Search Console.
+1. In the Worker, open **Settings**, **Domains and Routes**, choose **Add**, then **Custom domain**.
+2. Enter the domain, for example `prodpilot.dev` or `www.prodpilot.dev`. Its DNS must be on Cloudflare; Cloudflare creates the record and issues the certificate.
+3. Wait for the domain to show as active.
+4. Change `SITE_URL` to the new address, for example `https://prodpilot.dev`, and redeploy, so canonical links, the sitemap and social images use it.
+5. Submit `https://<domain>/sitemap-index.xml` in Google Search Console.
 
 ## Checks before a release
 

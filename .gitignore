@@ -23,3 +23,6 @@ pnpm-debug.log*
 # Python environment for the reference generator
 .venv/
 __pycache__/
+
+# Wrangler local state
+.wrangler/

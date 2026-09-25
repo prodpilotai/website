@@ -1,4 +1,4 @@
-# Cloudflare Pages response headers.
+# Cloudflare response headers for the static assets.
 #
 # script-src needs 'unsafe-inline' for the small scripts Astro and Starlight
 # inline into each page, and 'wasm-unsafe-eval' for the Pagefind search index.

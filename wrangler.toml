@@ -1,3 +1,12 @@
+# A static site served by Cloudflare Workers static assets, deployed with
+# `npx wrangler deploy` after `npm run build`. There is no Worker script:
+# every request is answered from dist, with public/_headers and
+# public/_redirects applied. Workers Builds replaces the name with the
+# connected Worker's own.
 name = "prodpilot"
 compatibility_date = "2026-09-25"
-pages_build_output_dir = "./dist"
+
+[assets]
+directory = "./dist"
+not_found_handling = "404-page"
+html_handling = "auto-trailing-slash"
