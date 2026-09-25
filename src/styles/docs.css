@@ -1,0 +1,177 @@
+/*
+ * The docs theme: Starlight's own variables mapped onto the ProdPilot panel.
+ *
+ * The accent is amber, the "checking" light, so the page you are reading is the
+ * one lit on the sidebar. Asides and badges use the three states: a tip is
+ * verified green, a caution is amber, a danger is failed red. A note is the
+ * panel's own slate, because it is information, not a state.
+ */
+
+:root {
+	--sl-font: var(--pp-sans);
+	--sl-font-mono: var(--pp-mono);
+
+	--sl-color-accent-low: #3b2c0c;
+	--sl-color-accent: #f2b544;
+	--sl-color-accent-high: #ffe1a1;
+
+	--sl-color-white: #f4f6fa;
+	--sl-color-gray-1: #e9edf4;
+	--sl-color-gray-2: #c9d1de;
+	--sl-color-gray-3: #a3b0c6;
+	--sl-color-gray-4: #8190a8;
+	--sl-color-gray-5: #2c3b58;
+	--sl-color-gray-6: #121c30;
+	--sl-color-black: #0b1322;
+
+	/* Aside and badge hues, one per state. */
+	--sl-color-green-low: #0f3222;
+	--sl-color-green: #45d483;
+	--sl-color-green-high: #b8f3d1;
+	--sl-color-purple-low: #0f3222;
+	--sl-color-purple: #45d483;
+	--sl-color-purple-high: #b8f3d1;
+	--sl-color-orange-low: #3b2c0c;
+	--sl-color-orange: #f2b544;
+	--sl-color-orange-high: #ffe1a1;
+	--sl-color-red-low: #3d1614;
+	--sl-color-red: #ff6b61;
+	--sl-color-red-high: #ffc9c4;
+	--sl-color-blue-low: #17233b;
+	--sl-color-blue: #8fa7cf;
+	--sl-color-blue-high: #d5e0f2;
+
+	--pp-state-checking: #f2b544;
+	--pp-state-verified: #45d483;
+	--pp-state-failed: #ff6b61;
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent-low: #fcebc4;
+	--sl-color-accent: #875500;
+	--sl-color-accent-high: #3f2800;
+
+	--sl-color-white: #0b1322;
+	--sl-color-gray-1: #172238;
+	--sl-color-gray-2: #26334d;
+	--sl-color-gray-3: #3f4d68;
+	--sl-color-gray-4: #5b6882;
+	--sl-color-gray-5: #c5cdda;
+	--sl-color-gray-6: #eef1f6;
+	--sl-color-gray-7: #f6f8fb;
+	--sl-color-black: #ffffff;
+
+	--sl-color-green-low: #dcf5e7;
+	--sl-color-green: #13703c;
+	--sl-color-green-high: #073d20;
+	--sl-color-purple-low: #dcf5e7;
+	--sl-color-purple: #13703c;
+	--sl-color-purple-high: #073d20;
+	--sl-color-orange-low: #fcebc4;
+	--sl-color-orange: #875500;
+	--sl-color-orange-high: #3f2800;
+	--sl-color-red-low: #fde3e0;
+	--sl-color-red: #b3261e;
+	--sl-color-red-high: #5c100b;
+	--sl-color-blue-low: #e6ecf6;
+	--sl-color-blue: #3b5680;
+	--sl-color-blue-high: #1a2c47;
+
+	--pp-state-checking: #875500;
+	--pp-state-verified: #13703c;
+	--pp-state-failed: #b3261e;
+}
+
+/* Headlines in the cockpit face. */
+.sl-markdown-content :is(h1, h2, h3, h4),
+h1#_top,
+.site-title {
+	font-family: var(--pp-display);
+	letter-spacing: -0.01em;
+}
+
+.site-title {
+	font-weight: 700;
+	gap: 0.6rem;
+}
+
+/* The current page is the lit item on the checklist. */
+.sidebar-content a[aria-current='page'] {
+	position: relative;
+	font-weight: 600;
+}
+
+.sidebar-content a[aria-current='page']::before {
+	content: '';
+	position: absolute;
+	inset-inline-start: -0.55rem;
+	top: 50%;
+	width: 0.4rem;
+	height: 0.4rem;
+	margin-top: -0.2rem;
+	border-radius: 50%;
+	background: var(--sl-color-accent);
+	box-shadow: 0 0 0 3px var(--sl-color-accent-low);
+}
+
+/* State words in running text: <span class="pp-state verified">verified</span>. */
+.pp-state {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4em;
+	font-family: var(--pp-mono);
+	font-size: 0.85em;
+	white-space: nowrap;
+}
+
+.pp-state::before {
+	content: '';
+	width: 0.55em;
+	height: 0.55em;
+	border-radius: 50%;
+	background: currentColor;
+}
+
+.pp-state.checking {
+	color: var(--pp-state-checking);
+}
+
+.pp-state.verified {
+	color: var(--pp-state-verified);
+}
+
+.pp-state.failed {
+	color: var(--pp-state-failed);
+}
+
+/* Tables carry most of the evidence, so they read as instrument logs. */
+.sl-markdown-content table {
+	font-variant-numeric: tabular-nums;
+}
+
+.sl-markdown-content th {
+	font-family: var(--pp-mono);
+	font-size: 0.8em;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--sl-color-gray-2);
+}
+
+/* The version stamp on generated pages. */
+.pp-stamp {
+	font-family: var(--pp-mono);
+	font-size: var(--sl-text-sm);
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 0.5rem;
+	padding: 0.6rem 0.9rem;
+	color: var(--sl-color-gray-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+	}
+}
