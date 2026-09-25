@@ -8,35 +8,33 @@ import { pypi, repo } from '../site.mjs';
 	description="This address does not match any page on the ProdPilot site."
 	noindex
 >
-	<header class="topbar">
-		<a class="brand" href="/" aria-label="ProdPilot home">
-			<img src="/favicon.svg" alt="" width="28" height="28" />
-			<span>ProdPilot</span>
-		</a>
-		<nav aria-label="Main">
-			<a href="/docs/getting-started/introduction/">Docs</a>
-			<a href={repo}>GitHub</a>
-			<a href={pypi}>PyPI</a>
-		</nav>
-	</header>
-
 	<main id="main">
-		<section class="lost">
-			<p class="eyebrow">Error 404</p>
+		<section class="plate stone lost">
+			<a class="brand" href="/" aria-label="ProdPilot home">
+				<svg viewBox="0 0 64 64" aria-hidden="true">
+					<circle cx="32" cy="32" r="19" fill="none" stroke="currentColor" stroke-width="3.5" />
+					<path d="M22.5 32.5l6.5 6.5 12.5-13.5" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+					<circle cx="47.5" cy="16.5" r="3.6" fill="#b86e12" />
+				</svg>
+				<span>ProdPilot</span>
+			</a>
+			<p class="label">Error 404</p>
 			<h1>No page at this address.</h1>
 			<ol class="checklist">
 				<li class="check" data-state="failed">
 					<span class="light" aria-hidden="true"></span>
 					<div>
-						<h2>Route check</h2>
+						<h2 class="row-title">Route check</h2>
 						<p>The address you followed does not match any page on this site.</p>
 					</div>
+					<span class="rule" aria-hidden="true">GET</span>
 					<span class="verdict"><span class="sr-only">Status: </span>not found</span>
 				</li>
 			</ol>
 			<p>
 				Start from the <a href="/">home page</a>, read the{' '}
-				<a href="/docs/getting-started/introduction/">documentation</a>, or use its search.
+				<a href="/docs/getting-started/introduction/">documentation</a>, or visit{' '}
+				<a href={repo}>GitHub</a> and <a href={pypi}>PyPI</a>.
 			</p>
 		</section>
 	</main>
