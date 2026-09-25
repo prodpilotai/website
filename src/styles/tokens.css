@@ -1,0 +1,35 @@
+/*
+ * The ProdPilot design tokens, shared by the landing page and the docs.
+ *
+ * The page is an instrument panel. Three indicator lights carry meaning and are
+ * never used for decoration: amber is a check in progress, green is verified,
+ * red is failed. Every other colour is the panel itself.
+ *
+ * Type: B612 is the typeface Airbus commissioned for cockpit displays. B612 Mono
+ * sets anything technical, B612 Bold sets headlines, IBM Plex Sans sets reading
+ * text.
+ */
+
+:root {
+	--pp-display: 'B612', 'Segoe UI', system-ui, sans-serif;
+	--pp-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	--pp-mono: 'B612 Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+	/* The panel, dark. */
+	--pp-panel: #0b1322;
+	--pp-bezel: #121c30;
+	--pp-raised: #182440;
+	--pp-line: #22304a;
+	--pp-line-strong: #2c3b58;
+	--pp-ink: #e9edf4;
+	--pp-ink-muted: #a3b0c6;
+	--pp-ink-faint: #7d8aa3;
+
+	/* The three indicator lights, on the dark panel. */
+	--pp-checking: #f2b544;
+	--pp-verified: #45d483;
+	--pp-failed: #ff6b61;
+
+	--pp-radius: 10px;
+	--pp-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
