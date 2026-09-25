@@ -1,8 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="ProdPilot">
-  <rect x="2" y="2" width="60" height="60" rx="14" fill="#0B1322"/>
-  <rect x="2.75" y="2.75" width="58.5" height="58.5" rx="13.25" fill="none" stroke="#2C3B58" stroke-width="1.5"/>
-  <circle cx="32" cy="32" r="19" fill="none" stroke="#2C3B58" stroke-width="3"/>
-  <path d="M13 32a19 19 0 0 1 33.4-12.4" fill="none" stroke="#45D483" stroke-width="3" stroke-linecap="round"/>
-  <path d="M22.5 32.5l6.5 6.5 12.5-13.5" fill="none" stroke="#E9EDF4" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="47.5" cy="16.5" r="3.2" fill="#F2B544"/>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#0F0E0C"/>
+  <rect x="2.75" y="2.75" width="58.5" height="58.5" rx="13.25" fill="none" stroke="#2E2A24" stroke-width="1.5"/>
+  <circle cx="32" cy="32" r="19" fill="none" stroke="#EFE8DE" stroke-width="3.5"/>
+  <path d="M22.5 32.5l6.5 6.5 12.5-13.5" fill="none" stroke="#EFE8DE" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="47.5" cy="16.5" r="3.6" fill="#E2BD79"/>
 </svg>

@@ -1,9 +1,9 @@
 // Facts about the project that more than one page links to. Each one is checked
 // against its source; see the comment beside it.
 
-// The deployed address. Set SITE_URL at build time to the Worker's workers.dev
-// address or the custom domain; this default is only a placeholder.
-export const siteUrl = process.env.SITE_URL ?? 'https://prodpilot.pages.dev';
+// The deployed address, the Cloudflare Worker's own. SITE_URL overrides it,
+// for example once a custom domain is attached.
+export const siteUrl = process.env.SITE_URL ?? 'https://website.prodpilot-ai.workers.dev';
 
 // PyPI project page and name, from https://pypi.org/pypi/prodpilot/json.
 export const pypi = 'https://pypi.org/project/prodpilot/';

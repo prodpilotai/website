@@ -3,6 +3,7 @@ import Landing from '../layouts/Landing.astro';
 import Stage from '../components/Stage.astro';
 import Command from '../components/Command.astro';
 import LiveCheck from '../components/LiveCheck.astro';
+import Motion from '../components/Motion.astro';
 import reference from '../data/reference.json';
 import { facts } from '../data/facts';
 import { demo, email, install, issues, license, pypi, repo, securityReport, siteUrl, team } from '../site.mjs';
@@ -149,6 +150,21 @@ const proof = [
 ---
 
 <Landing title={title} description={description} jsonLd={jsonLd}>
+	<header class="dock" data-dock data-shown="false" inert>
+		<a class="brand" href="/" aria-label="ProdPilot home">
+			<svg viewBox="0 0 64 64" aria-hidden="true"><use href="#mark" /></svg>
+			<span>ProdPilot</span>
+		</a>
+		<nav aria-label="Sections">
+			<a href="#how">How it works</a>
+			<a href="#proof">Proof</a>
+			<a href="#live">Live check</a>
+			<a href="#start">Get started</a>
+		</nav>
+		<a class="button solid" href="/docs/getting-started/introduction/">Docs</a>
+		<span class="dock-progress" data-progress aria-hidden="true"></span>
+	</header>
+
 	<main id="main">
 		<section class="hero" aria-labelledby="hero-title">
 			<div class="plate stone hero-side">
@@ -252,7 +268,7 @@ const proof = [
 						{
 							drawing.map((d) => (
 								<g class={`band band-${d.n}`}>
-									<polygon points={d.points} />
+									<polygon points={d.points} pathLength="1" />
 									<text x="160" y={d.label} text-anchor="middle">{d.n}</text>
 								</g>
 							))
@@ -498,6 +514,7 @@ const proof = [
 			<circle cx="47.5" cy="16.5" r="3.6" fill="#b86e12" />
 		</symbol>
 	</svg>
+	<Motion />
 </Landing>
 
 <script>

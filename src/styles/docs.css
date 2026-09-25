@@ -1,45 +1,48 @@
 /*
- * The docs theme: Starlight's own variables mapped onto the ProdPilot panel.
+ * The docs theme: Starlight's own variables mapped onto the landing page's two
+ * surfaces. Dark mode is the night stage, light mode is warm stone.
  *
- * The accent is amber, the "checking" light, so the page you are reading is the
- * one lit on the sidebar. Asides and badges use the three states: a tip is
- * verified green, a caution is amber, a danger is failed red. A note is the
- * panel's own slate, because it is information, not a state.
+ * The accent is the stage's gold in dark mode and a deep bronze in light mode,
+ * so the page you are reading is the one lit on the sidebar. Asides and badges
+ * use the three states: a tip is verified green, a caution is amber, a danger
+ * is failed red. A note is the surface's own warm grey, because it is
+ * information, not a state.
  */
 
 :root {
 	--sl-font: var(--pp-sans);
 	--sl-font-mono: var(--pp-mono);
+	--sl-content-width: 46rem;
 
-	--sl-color-accent-low: #3b2c0c;
-	--sl-color-accent: #f2b544;
-	--sl-color-accent-high: #ffe1a1;
+	--sl-color-accent-low: #3a2c14;
+	--sl-color-accent: #e2bd79;
+	--sl-color-accent-high: #f6ddab;
 
-	--sl-color-white: #f4f6fa;
-	--sl-color-gray-1: #e9edf4;
-	--sl-color-gray-2: #c9d1de;
-	--sl-color-gray-3: #a3b0c6;
-	--sl-color-gray-4: #8190a8;
-	--sl-color-gray-5: #2c3b58;
-	--sl-color-gray-6: #121c30;
-	--sl-color-black: #0b1322;
+	--sl-color-white: #f5efe6;
+	--sl-color-gray-1: #e8e1d6;
+	--sl-color-gray-2: #cfc7bb;
+	--sl-color-gray-3: #aaa196;
+	--sl-color-gray-4: #8a8177;
+	--sl-color-gray-5: #2e2a24;
+	--sl-color-gray-6: #171512;
+	--sl-color-black: #0f0e0c;
 
 	/* Aside and badge hues, one per state. */
-	--sl-color-green-low: #0f3222;
+	--sl-color-green-low: #0f2a1c;
 	--sl-color-green: #45d483;
 	--sl-color-green-high: #b8f3d1;
-	--sl-color-purple-low: #0f3222;
+	--sl-color-purple-low: #0f2a1c;
 	--sl-color-purple: #45d483;
 	--sl-color-purple-high: #b8f3d1;
-	--sl-color-orange-low: #3b2c0c;
+	--sl-color-orange-low: #33260d;
 	--sl-color-orange: #f2b544;
 	--sl-color-orange-high: #ffe1a1;
-	--sl-color-red-low: #3d1614;
+	--sl-color-red-low: #34150f;
 	--sl-color-red: #ff6b61;
 	--sl-color-red-high: #ffc9c4;
-	--sl-color-blue-low: #17233b;
-	--sl-color-blue: #8fa7cf;
-	--sl-color-blue-high: #d5e0f2;
+	--sl-color-blue-low: #1d1a16;
+	--sl-color-blue: #b9ab96;
+	--sl-color-blue-high: #e6dccb;
 
 	--pp-state-checking: #f2b544;
 	--pp-state-verified: #45d483;
@@ -47,58 +50,99 @@
 }
 
 :root[data-theme='light'] {
-	--sl-color-accent-low: #fcebc4;
-	--sl-color-accent: #875500;
-	--sl-color-accent-high: #3f2800;
+	--sl-color-accent-low: #eadbc0;
+	--sl-color-accent: #7a4a12;
+	--sl-color-accent-high: #3d2406;
 
-	--sl-color-white: #0b1322;
-	--sl-color-gray-1: #172238;
-	--sl-color-gray-2: #26334d;
-	--sl-color-gray-3: #3f4d68;
-	--sl-color-gray-4: #5b6882;
-	--sl-color-gray-5: #c5cdda;
-	--sl-color-gray-6: #eef1f6;
-	--sl-color-gray-7: #f6f8fb;
-	--sl-color-black: #ffffff;
+	--sl-color-white: #1c1814;
+	--sl-color-gray-1: #241f1a;
+	--sl-color-gray-2: #352e27;
+	--sl-color-gray-3: #4d443b;
+	--sl-color-gray-4: #62594f;
+	--sl-color-gray-5: #c9bdaf;
+	--sl-color-gray-6: #e3dbd0;
+	--sl-color-gray-7: #e8e1d6;
+	--sl-color-black: #f2ede5;
 
-	--sl-color-green-low: #dcf5e7;
-	--sl-color-green: #13703c;
-	--sl-color-green-high: #073d20;
-	--sl-color-purple-low: #dcf5e7;
-	--sl-color-purple: #13703c;
-	--sl-color-purple-high: #073d20;
-	--sl-color-orange-low: #fcebc4;
-	--sl-color-orange: #875500;
+	--sl-color-green-low: #dbeadf;
+	--sl-color-green: #155c33;
+	--sl-color-green-high: #0a3a1f;
+	--sl-color-purple-low: #dbeadf;
+	--sl-color-purple: #155c33;
+	--sl-color-purple-high: #0a3a1f;
+	--sl-color-orange-low: #efe0c2;
+	--sl-color-orange: #6e4700;
 	--sl-color-orange-high: #3f2800;
-	--sl-color-red-low: #fde3e0;
-	--sl-color-red: #b3261e;
+	--sl-color-red-low: #f2d8d2;
+	--sl-color-red: #9c2418;
 	--sl-color-red-high: #5c100b;
-	--sl-color-blue-low: #e6ecf6;
-	--sl-color-blue: #3b5680;
-	--sl-color-blue-high: #1a2c47;
+	--sl-color-blue-low: #e4dbcf;
+	--sl-color-blue: #5a4e40;
+	--sl-color-blue-high: #2a231c;
 
-	--pp-state-checking: #875500;
-	--pp-state-verified: #13703c;
-	--pp-state-failed: #b3261e;
+	--pp-state-checking: #6e4700;
+	--pp-state-verified: #155c33;
+	--pp-state-failed: #9c2418;
 }
 
-/* Headlines in the cockpit face. */
-.sl-markdown-content :is(h1, h2, h3, h4),
+/* Headlines in the editorial serif, as on the landing page. */
+.sl-markdown-content :is(h1, h2, h3),
 h1#_top,
 .site-title {
 	font-family: var(--pp-display);
-	letter-spacing: -0.01em;
+	font-weight: 400;
+	letter-spacing: -0.015em;
+	font-optical-sizing: auto;
+}
+
+h1#_top {
+	font-size: clamp(2.3rem, 4vw, 3.1rem);
+	font-weight: 360;
+	line-height: 1.05;
+	letter-spacing: -0.022em;
+}
+
+.sl-markdown-content h2 {
+	font-size: 1.85rem;
+	line-height: 1.15;
+}
+
+.sl-markdown-content h3 {
+	font-size: 1.35rem;
+}
+
+.sl-markdown-content h4 {
+	font-family: var(--pp-mono);
+	font-size: 0.8rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
 }
 
 .site-title {
-	font-weight: 700;
-	gap: 0.6rem;
+	font-size: 1.35rem;
+	gap: 0.55rem;
+	color: var(--sl-color-white);
+}
+
+/* Sidebar group labels read as instrument labels. */
+.sidebar-content details > summary .group-label > .large,
+.sidebar-content .top-level > li > details > summary {
+	font-family: var(--pp-mono);
+	font-size: 0.72rem;
+	font-weight: 400;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--sl-color-gray-3);
 }
 
 /* The current page is the lit item on the checklist. */
-.sidebar-content a[aria-current='page'] {
+.sidebar-content a[aria-current='page'],
+.sidebar-content a[aria-current='page']:hover,
+.sidebar-content a[aria-current='page']:focus {
 	position: relative;
 	font-weight: 600;
+	background: var(--sl-color-accent-low);
+	color: var(--sl-color-accent-high);
 }
 
 .sidebar-content a[aria-current='page']::before {
@@ -111,7 +155,38 @@ h1#_top,
 	margin-top: -0.2rem;
 	border-radius: 50%;
 	background: var(--sl-color-accent);
+	box-shadow: 0 0 10px var(--sl-color-accent);
+}
+
+:root[data-theme='light'] .sidebar-content a[aria-current='page']::before {
 	box-shadow: 0 0 0 3px var(--sl-color-accent-low);
+}
+
+/* Hairlines rather than boxes, like the landing page's ledgers. */
+.sl-markdown-content table {
+	font-variant-numeric: tabular-nums;
+	border-collapse: collapse;
+}
+
+.sl-markdown-content :is(th, td) {
+	border-inline: 0;
+}
+
+.sl-markdown-content th {
+	font-family: var(--pp-mono);
+	font-size: 0.72rem;
+	font-weight: 400;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--sl-color-gray-3);
+	background: transparent;
+}
+
+.sl-markdown-content :not(pre) > code {
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 5px;
+	padding: 0.08em 0.35em;
+	background: var(--sl-color-gray-6);
 }
 
 /* State words in running text: <span class="pp-state verified">verified</span>. */
@@ -144,19 +219,6 @@ h1#_top,
 	color: var(--pp-state-failed);
 }
 
-/* Tables carry most of the evidence, so they read as instrument logs. */
-.sl-markdown-content table {
-	font-variant-numeric: tabular-nums;
-}
-
-.sl-markdown-content th {
-	font-family: var(--pp-mono);
-	font-size: 0.8em;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
-	color: var(--sl-color-gray-2);
-}
-
 /* The version stamp on generated pages. */
 .pp-stamp {
 	font-family: var(--pp-mono);
@@ -164,7 +226,7 @@ h1#_top,
 	border: 1px solid var(--sl-color-gray-5);
 	border-radius: 0.5rem;
 	padding: 0.6rem 0.9rem;
-	color: var(--sl-color-gray-2);
+	color: var(--sl-color-gray-3);
 }
 
 @media (prefers-reduced-motion: reduce) {

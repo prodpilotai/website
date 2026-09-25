@@ -17,15 +17,14 @@ export default defineConfig({
 			description:
 				'Documentation for ProdPilot, the local MCP server that audits a Node.js with Express or React with Vite project, verifies every fix your editor agent makes, and deploys only what passes.',
 			// The site title sits beside the mark, so the image needs no alt text.
-			logo: { src: './src/assets/mark.svg', alt: '' },
+			logo: { dark: './src/assets/mark-dark.svg', light: './src/assets/mark-light.svg', alt: '' },
 			// Wrapped lines keep command output readable on a phone, and a block
 			// that never scrolls sideways needs no keyboard stop of its own.
 			expressiveCode: { defaultProps: { wrap: true } },
 			favicon: '/favicon.svg',
 			social: [{ icon: 'github', label: 'ProdPilot on GitHub', href: repo }],
 			customCss: [
-				'@fontsource/b612/400.css',
-				'@fontsource/b612/700.css',
+				'@fontsource-variable/newsreader/opsz.css',
 				'@fontsource/b612-mono/400.css',
 				'@fontsource/b612-mono/700.css',
 				'@fontsource/ibm-plex-sans/400.css',

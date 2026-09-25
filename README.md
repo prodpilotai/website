@@ -75,7 +75,7 @@ The site is served by Cloudflare Workers static assets. There is no Worker scrip
 3. Set the build:
    - Build command: `npm run build`
    - Deploy command: `npx wrangler deploy`
-4. Under the Worker's **Settings**, **Build**, **Variables and secrets**, add `SITE_URL` set to the address the site is served from, for example `https://<worker>.<account>.workers.dev`. Canonical links, the sitemap and the social image URLs are built from it; without it they fall back to a placeholder.
+4. Canonical links, the sitemap and the social image URLs are built from the site address in `src/site.mjs`, which is the live Worker, `https://website.prodpilot-ai.workers.dev`. To serve the site elsewhere, add a `SITE_URL` build variable under the Worker's **Settings**, **Build**, **Variables and secrets**.
 5. Save and deploy. Every push to `main` redeploys.
 
 Workers Builds replaces the `name` in `wrangler.toml` with the connected Worker's own name, so the two do not need to match. The Node.js version comes from `.node-version`.

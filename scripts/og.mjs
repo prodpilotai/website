@@ -105,34 +105,32 @@ const home = `<!doctype html><html><head><meta charset="utf-8"><style>${homeCss}
 </div>
 </body></html>`;
 
-// ---- Docs: the documentation's instrument panel ----------------------------
+// ---- Docs: the night stage, with the sections as a ledger ------------------
 
 const docsCss = `
-@font-face { font-family: 'B612'; font-weight: 700; src: url(${font('@fontsource/b612', 'b612-latin-700-normal.woff2')}); }
+@font-face { font-family: 'Newsreader'; font-weight: 200 800; src: url(${font('@fontsource-variable/newsreader', 'newsreader-latin-opsz-normal.woff2')}); }
 @font-face { font-family: 'B612 Mono'; font-weight: 400; src: url(${font('@fontsource/b612-mono', 'b612-mono-latin-400-normal.woff2')}); }
 @font-face { font-family: 'IBM Plex Sans'; font-weight: 400; src: url(${font('@fontsource/ibm-plex-sans', 'ibm-plex-sans-latin-400-normal.woff2')}); }
 * { box-sizing: border-box; margin: 0; }
-body { width: 1200px; height: 630px; background: #0b1322; color: #e9edf4; font-family: 'IBM Plex Sans', sans-serif; }
-.card { position: relative; width: 100%; height: 100%; padding: 64px 72px; display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center;
-	background: radial-gradient(900px 500px at 85% 20%, #182440 0%, transparent 70%), #0b1322; }
-.card::after { content: ''; position: absolute; inset: 18px; border: 1px solid #22304a; border-radius: 22px; pointer-events: none; }
-.brand { display: flex; align-items: center; gap: 14px; font-family: 'B612'; font-weight: 700; font-size: 30px; margin-bottom: 40px; }
-.brand svg { width: 52px; height: 52px; }
-h1 { font-family: 'B612'; font-weight: 700; font-size: 50px; line-height: 1.12; letter-spacing: -0.5px; }
-.sub { margin-top: 26px; font-size: 25px; line-height: 1.45; color: #a3b0c6; max-width: 640px; }
-.cmd { margin-top: 34px; display: inline-block; font-family: 'B612 Mono'; font-size: 22px; padding: 12px 18px; border: 1px solid #2c3b58; border-radius: 10px; background: #121c30; }
-.cmd b { color: #f2b544; font-weight: 400; }
-.rows { list-style: none; padding: 0; width: 440px; display: grid; gap: 14px; }
-.rows li { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border: 1px solid #2c3b58; border-radius: 14px; background: #121c30; font-family: 'B612 Mono'; font-size: 22px; }
-.rows i { width: 14px; height: 14px; border-radius: 50%; background: #45d483; box-shadow: 0 0 12px #45d48399; }
+body { width: 1200px; height: 630px; background: #0a0908; padding: 14px; color: #efe8de; font-family: 'IBM Plex Sans', sans-serif; }
+.card { height: 100%; border-radius: 16px; padding: 56px 64px; display: grid; grid-template-columns: 1fr 400px; gap: 56px; align-items: center;
+	background: radial-gradient(60% 70% at 80% 40%, rgba(226,189,121,0.09), transparent 70%), #0f0e0c; }
+.brand { display: flex; align-items: center; gap: 12px; font-family: 'Newsreader'; font-size: 32px; margin-bottom: 40px; }
+.brand svg { width: 44px; height: 44px; }
+.label { font-family: 'B612 Mono'; font-size: 15px; letter-spacing: 3px; color: #aaa196; margin-bottom: 14px; }
+h1 { font-family: 'Newsreader'; font-weight: 340; font-size: 70px; line-height: 1; letter-spacing: -2px; }
+.sub { margin-top: 24px; font-size: 22px; line-height: 1.45; color: #aaa196; max-width: 560px; }
+.rows { list-style: none; padding: 0; border-top: 1px solid rgba(239,232,222,0.14); }
+.rows li { display: flex; align-items: center; gap: 18px; padding: 19px 4px; border-bottom: 1px solid rgba(239,232,222,0.14); font-family: 'B612 Mono'; font-size: 20px; letter-spacing: 1px; }
+.rows i { width: 9px; height: 9px; border-radius: 50%; background: #45d483; box-shadow: 0 0 12px #45d483aa; }
 `;
 
 const docs = `<!doctype html><html><head><meta charset="utf-8"><style>${docsCss}</style></head><body><div class="card">
 <div>
 	<p class="brand">${mark.replace(/<svg /, '<svg aria-hidden="true" ')}ProdPilot</p>
-	<h1>Documentation</h1>
-	<p class="sub">Install ProdPilot, connect your editor, and see how the audit, the fix loop, the gate and the deploy work.</p>
-	<p class="cmd"><b>$</b> pip install prodpilot</p>
+	<p class="label">DOCUMENTATION</p>
+	<h1>How it works, and how to use it</h1>
+	<p class="sub">Install ProdPilot, connect your editor, and read how the audit, the fix loop, the gate and the deploy work.</p>
 </div>
 <ul class="rows">
 	<li><i></i>Getting started</li>
@@ -155,5 +153,5 @@ for (const [name, html] of Object.entries({ home, docs })) {
 }
 await browser.close();
 
-await sharp(Buffer.from(mark), { density: 400 }).resize(180, 180).flatten({ background: '#0b1322' }).png().toFile(join(root, 'public/apple-touch-icon.png'));
+await sharp(Buffer.from(mark), { density: 400 }).resize(180, 180).flatten({ background: '#0f0e0c' }).png().toFile(join(root, 'public/apple-touch-icon.png'));
 console.log('wrote public/apple-touch-icon.png');
