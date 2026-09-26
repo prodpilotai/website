@@ -75,7 +75,7 @@ The site is served by Cloudflare Workers static assets. There is no Worker scrip
 3. Set the build:
    - Build command: `npm run build`
    - Deploy command: `npx wrangler deploy`
-4. Canonical links, the sitemap and the social image URLs are built from the site address in `src/site.mjs`, which is the live Worker, `https://website.prodpilot-ai.workers.dev`. To serve the site elsewhere, add a `SITE_URL` build variable under the Worker's **Settings**, **Build**, **Variables and secrets**.
+4. Canonical links, the sitemap and the social image URLs are built from the site address in `src/site.mjs`, which is the live Worker, `https://website.prodpilot-ai.workers.dev`. To serve the site elsewhere, add a `PRODPILOT_SITE_URL` build variable under the Worker's **Settings**, **Build**, **Variables and secrets**.
 5. Save and deploy. Every push to `main` redeploys.
 
 Workers Builds replaces the `name` in `wrangler.toml` with the connected Worker's own name, so the two do not need to match. The Node.js version comes from `.node-version`.
@@ -96,7 +96,7 @@ No custom domain is set yet. To attach one:
 1. In the Worker, open **Settings**, **Domains and Routes**, choose **Add**, then **Custom domain**.
 2. Enter the domain, for example `prodpilot.dev` or `www.prodpilot.dev`. Its DNS must be on Cloudflare; Cloudflare creates the record and issues the certificate.
 3. Wait for the domain to show as active.
-4. Change `SITE_URL` to the new address, for example `https://prodpilot.dev`, and redeploy, so canonical links, the sitemap and social images use it.
+4. Change `PRODPILOT_SITE_URL` to the new address, for example `https://prodpilot.dev`, and redeploy, so canonical links, the sitemap and social images use it.
 5. Submit `https://<domain>/sitemap-index.xml` in Google Search Console.
 
 ## Checks before a release

@@ -3,7 +3,7 @@ title: Changelog
 description: What changed in each ProdPilot release, from the first release candidate to 1.0.0.
 ---
 
-The source is [CHANGELOG.md](https://github.com/prodpilotai/ProdPilot/blob/main/CHANGELOG.md). Releases are on [PyPI](https://pypi.org/project/prodpilot/#history) and [GitHub](https://github.com/prodpilotai/ProdPilot/releases).
+The source is [CHANGELOG.md](https://github.com/prodpilotai/ProdPilot/blob/main/CHANGELOG.md). Releases are on [PyPI](https://pypi.org/project/prodpilot/) and [GitHub](https://github.com/prodpilotai/ProdPilot/releases).
 
 ## 1.0.0, 20 September 2026
 

@@ -6,7 +6,7 @@ import LiveCheck from '../components/LiveCheck.astro';
 import Motion from '../components/Motion.astro';
 import reference from '../data/reference.json';
 import { facts } from '../data/facts';
-import { demo, email, install, issues, license, pypi, repo, securityReport, siteUrl, team } from '../site.mjs';
+import { demo, email, install, issues, license, mailto, pypi, repo, securityReport, siteUrl, team, topics } from '../site.mjs';
 
 const percent = Math.round(reference.determinism_ratio * 100);
 const grouped = (n: number) => n.toLocaleString('en-US');
@@ -27,7 +27,7 @@ const jsonLd = [
 		url: siteUrl,
 		codeRepository: repo,
 		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-		author: team.map((name) => ({ '@type': 'Person', name })),
+		author: team.map((m) => ({ '@type': 'Person', name: m.name, url: m.url })),
 	},
 ];
 
@@ -484,11 +484,20 @@ const proof = [
 					<h2 id="contact-title">Questions, bugs and security reports</h2>
 				</header>
 				<ul class="contact">
-					<li><span class="label">Email</span> <a href={`mailto:${email}`}>{email}</a></li>
+					<li>
+						<span class="label">Email</span>
+						<a class="contact-email" href={`mailto:${email}`}>{email}</a>
+						<span class="topics">
+							{topics.map((t) => <a class="button" href={mailto(t.subject)}>{t.label}</a>)}
+						</span>
+					</li>
 					<li><span class="label">Bugs and requests</span> <a href={issues}>GitHub Issues</a></li>
 					<li>
-						<span class="label">Security</span> Report a vulnerability privately through the repository's
-						{' '}<a href={securityReport}>Security tab</a>, never in a public issue.
+						<span class="label">Security</span>
+						<p>
+							Report a vulnerability privately through the repository's{' '}
+							<a href={securityReport}>Security tab</a>, never in a public issue.
+						</p>
 					</li>
 				</ul>
 			</div>
@@ -496,15 +505,68 @@ const proof = [
 	</main>
 
 	<footer class="footer">
-		<nav aria-label="Footer">
-			<a href={repo}>GitHub</a>
-			<a href={pypi}>PyPI</a>
-			<a href="/docs/getting-started/introduction/">Docs</a>
-			<a href={`mailto:${email}`}>Contact</a>
-			<a href={license}>MIT License</a>
+		<div class="footer-lead">
+			<p class="tagline">Cleared for <em>production.</em></p>
+			<div class="footer-cta">
+				<p>From localhost to live, with every fix checked on the way.</p>
+				<Command command={install} label="Copy the install command" />
+				<div class="actions">
+					<a class="button solid" href="/docs/getting-started/quickstart/">Start the quickstart <span aria-hidden="true">&rarr;</span></a>
+					<a class="button" href={repo}>Star it on GitHub</a>
+				</div>
+			</div>
+		</div>
+
+		<nav class="footer-grid" aria-label="Footer">
+			<div>
+				<p class="label">Product</p>
+				<ul>
+					<li><a href="/docs/getting-started/introduction/">Documentation</a></li>
+					<li><a href="/docs/getting-started/quickstart/">Quickstart</a></li>
+					<li><a href="/docs/reference/rules/">Rule catalog</a></li>
+					<li><a href="/docs/help/changelog/">Changelog</a></li>
+				</ul>
+			</div>
+			<div>
+				<p class="label">Open source</p>
+				<ul>
+					<li><a href={repo}>GitHub repository <span class="path">prodpilotai/ProdPilot</span></a></li>
+					<li><a href={pypi}>PyPI package</a></li>
+					<li><a href={issues}>Issues</a></li>
+					<li><a href={license}>MIT License</a></li>
+				</ul>
+			</div>
+			<div>
+				<p class="label">Team</p>
+				<ul>
+					{
+						team.map((m) => (
+							<li>
+								<a href={m.url} rel="author">{m.name}<svg class="out" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4" /></svg></a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+			<div>
+				<p class="label">Contact</p>
+				<ul>
+					<li><a href={`mailto:${email}`}>{email}</a></li>
+					{topics.map((t) => <li><a href={mailto(t.subject)}>{t.label}</a></li>)}
+				</ul>
+			</div>
 		</nav>
-		<p>Built by {team.slice(0, -1).join(', ')} and {team.at(-1)}.</p>
-		<p class="fine">ProdPilot {reference.version}</p>
+
+		<p class="wordmark" aria-hidden="true">ProdPilot</p>
+
+		<div class="footer-base">
+			<a class="brand" href="/" aria-label="ProdPilot home">
+				<svg viewBox="0 0 64 64" aria-hidden="true"><use href="#mark" /></svg>
+				<span>ProdPilot {reference.version}</span>
+			</a>
+			<p>Open source under the MIT license. Built by the ProdPilot team.</p>
+			<a class="top" href="#main">Back to top</a>
+		</div>
 	</footer>
 
 	<svg width="0" height="0" class="sr-only" aria-hidden="true">

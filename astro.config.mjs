@@ -34,11 +34,15 @@ export default defineConfig({
 			],
 			head: [
 				{ tag: 'meta', attrs: { property: 'og:image', content: new URL('/og/docs.png', siteUrl).href } },
+				{ tag: 'meta', attrs: { property: 'og:image:secure_url', content: new URL('/og/docs.png', siteUrl).href } },
+				{ tag: 'meta', attrs: { property: 'og:image:type', content: 'image/png' } },
 				{ tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
 				{ tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
 				{ tag: 'meta', attrs: { property: 'og:image:alt', content: 'ProdPilot documentation' } },
 				{ tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
 				{ tag: 'meta', attrs: { name: 'twitter:image', content: new URL('/og/docs.png', siteUrl).href } },
+				{ tag: 'meta', attrs: { name: 'twitter:image:alt', content: 'ProdPilot documentation' } },
+				{ tag: 'meta', attrs: { property: 'og:site_name', content: 'ProdPilot' } },
 				{ tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' } },
 				// A wide table scrolls sideways, so it has to be reachable by
 				// keyboard. Only tables that actually overflow get a tab stop.

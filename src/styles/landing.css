@@ -1096,28 +1096,200 @@ h1 em {
 
 /* ---- Footer --------------------------------------------------------------- */
 
+/* The last plate: the tagline, the way in, every link, and the wordmark. */
 .footer {
-	padding: 2.5rem var(--inline) 3rem;
-	color: var(--ivory-muted);
-	font-size: 0.92rem;
-	display: grid;
-	gap: 0.6rem;
+	--ink: var(--ivory);
+	--muted: var(--ivory-muted);
+	--line: var(--night-line);
+	--accent: var(--gold);
+	--raised: var(--night-raised);
+	--verified: #45d483;
+	position: relative;
+	margin: 0 var(--gap) var(--gap);
+	padding: clamp(64px, 9vw, 128px) var(--inline) 0;
+	border-radius: var(--radius);
+	overflow: hidden;
+	color: var(--ink);
+	background:
+		radial-gradient(70% 60% at 50% 100%, rgba(226, 189, 121, 0.14), transparent 70%),
+		radial-gradient(50% 40% at 85% 0%, rgba(226, 189, 121, 0.06), transparent 70%),
+		var(--night);
 }
 
-.footer nav {
+.footer-lead {
+	display: grid;
+	grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+	gap: clamp(2rem, 6vw, 6rem);
+	align-items: end;
+	padding-bottom: clamp(3rem, 6vw, 5rem);
+	border-bottom: 1px solid var(--line);
+}
+
+.footer-lead > * {
+	min-width: 0;
+}
+
+.tagline {
+	font-family: var(--serif);
+	font-weight: 330;
+	font-size: clamp(3.2rem, 8.4vw, 8.2rem);
+	line-height: 0.92;
+	letter-spacing: -0.035em;
+	text-wrap: balance;
+}
+
+.tagline em {
+	display: block;
+	font-style: italic;
+	color: var(--gold);
+	text-shadow: 0 0 40px rgba(226, 189, 121, 0.25);
+}
+
+.footer-cta {
+	display: grid;
+	gap: 1.25rem;
+}
+
+.footer-cta > p {
+	color: var(--muted);
+	font-size: 1.05rem;
+	max-width: 34ch;
+}
+
+.footer-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 2rem clamp(1.5rem, 3vw, 3rem);
+	padding: clamp(2.5rem, 5vw, 4rem) 0;
+}
+
+.footer-grid > div {
+	min-width: 0;
+}
+
+.footer-grid ul {
+	list-style: none;
+	margin: 1.1rem 0 0;
+	padding: 0;
+	display: grid;
+	gap: 0.65rem;
+}
+
+.footer-grid a {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.15rem 0.45rem;
+	color: var(--ivory);
+	text-decoration: none;
+	font-size: 0.97rem;
+	overflow-wrap: anywhere;
+	transition: color 0.2s var(--ease);
+}
+
+.footer-grid a:hover {
+	color: var(--gold);
+}
+
+.footer-grid .path {
+	font-family: var(--mono);
+	font-size: 0.74rem;
+	color: var(--muted);
+}
+
+.footer-grid .out {
+	width: 0.7em;
+	height: 0.7em;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.4;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	opacity: 0.6;
+	transition:
+		transform 0.25s var(--ease),
+		opacity 0.25s var(--ease);
+}
+
+.footer-grid a:hover .out {
+	transform: translate(2px, -2px);
+	opacity: 1;
+}
+
+.wordmark {
+	font-family: var(--serif);
+	font-weight: 300;
+	font-size: clamp(5rem, 21vw, 22rem);
+	line-height: 0.75;
+	letter-spacing: -0.05em;
+	text-align: center;
+	margin: 0 calc(-1 * var(--inline) + 8px) -0.08em;
+	color: transparent;
+	background: linear-gradient(180deg, rgba(239, 232, 222, 0.16), rgba(239, 232, 222, 0.02) 85%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	user-select: none;
+	white-space: nowrap;
+}
+
+.footer-base {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.4rem 1.5rem;
-	margin-bottom: 0.4rem;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem 2rem;
+	padding: 1.4rem 0 1.8rem;
+	border-top: 1px solid var(--line);
+	color: var(--muted);
+	font-size: 0.88rem;
 }
 
-.footer a {
+.footer-base .brand {
+	font-size: 1rem;
 	color: var(--ivory);
-	--accent: var(--gold);
 }
 
-.footer .fine {
-	color: var(--ivory-muted);
+.footer-base .brand svg {
+	width: 24px;
+	height: 24px;
+}
+
+.footer-base .top {
+	font-family: var(--mono);
+	font-size: 0.72rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--ivory);
+}
+
+/* The contact plate's email and its ready-made subjects. */
+.contact-email {
+	font-family: var(--serif);
+	font-size: clamp(1.4rem, 2.6vw, 2rem);
+	letter-spacing: -0.01em;
+	overflow-wrap: anywhere;
+}
+
+.topics {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-top: 0.6rem;
+}
+
+@media (max-width: 1000px) {
+	.footer-lead {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.footer-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 520px) {
+	.footer-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
 }
 
 /* ---- The 404 page -------------------------------------------------------- */
