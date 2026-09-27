@@ -1,0 +1,223 @@
+---
+import hero from '../data/hero.json';
+
+// The hero visual: the recorded run of node_express_insecure, replayed. The
+// readiness gauge climbs from the audit's score to the gate's, and the rules
+// flip from failing to passing in the order the run turned them. Every value
+// comes from hero.json, which gen_hero.py writes from the recorded trace.
+//
+// The markup is the end of the run, so the page tells the truth with no script,
+// with reduced motion, and to anything that reads the HTML.
+
+const bands = [
+	{ from: 0, to: 39, name: 'Not Ready' },
+	{ from: 40, to: 69, name: 'Needs Work' },
+	{ from: 70, to: 89, name: 'Nearly Ready' },
+	{ from: 90, to: 100, name: 'Production Ready' },
+];
+const band = (v: number) => bands.find((b) => v >= b.from && v <= b.to)!.name;
+const text = Object.fromEntries(hero.rules.map((r) => [r.id, r.text]));
+const priority = Object.fromEntries(hero.rules.map((r) => [r.id, r.priority]));
+
+// The rows, in the order the run turned them, then the rules it left failing.
+type Row = { id: string; start: 'failed' | 'idle'; end: 'verified' | 'carried' | 'review' };
+const rows: Row[] = [
+	...hero.steps.map((s) => ({
+		id: s.rule,
+		start: hero.start.skipped.includes(s.rule) ? ('idle' as const) : ('failed' as const),
+		end: s.verified ? ('verified' as const) : ('carried' as const),
+	})),
+	...hero.end.failing.map((id) => ({ id, start: 'failed' as const, end: 'review' as const })),
+];
+const words = {
+	failed: 'fails in production',
+	idle: 'does not apply',
+	verified: 'verified',
+	carried: 'passes, file exists',
+	review: 'manual review',
+};
+
+// The gauge: a half dial, 0 to 100, with the four bands.
+const R = 80;
+const C = { x: 100, y: 96 };
+const point = (v: number, r = R) => {
+	const t = Math.PI * (1 - v / 100);
+	return { x: C.x + r * Math.cos(t), y: C.y - r * Math.sin(t) };
+};
+const arc = (from: number, to: number, r = R) => {
+	const p = point(from, r);
+	const q = point(to, r);
+	return `M ${p.x.toFixed(2)} ${p.y.toFixed(2)} A ${r} ${r} 0 0 1 ${q.x.toFixed(2)} ${q.y.toFixed(2)}`;
+};
+
+const start = hero.start.score;
+const end = hero.end.score;
+const verified = hero.verified;
+const carried = hero.steps.length - hero.verified;
+const review = hero.end.failing.length;
+const gate = hero.end.gate;
+---
+
+<figure class="run" data-run data-state="verified" aria-labelledby="run-caption">
+	<div class="run-head" aria-hidden="true">
+		<span>Recorded run</span>
+		<code>{hero.sample}</code>
+		<span>ProdPilot {hero.prodpilot}</span>
+	</div>
+
+	<div class="run-body" aria-hidden="true">
+		<div class="run-gauge">
+			<svg viewBox="0 0 200 108">
+				{bands.map((b) => <path class="band" d={arc(b.from + 0.8, b.to - 0.8)} />)}
+				<path class="reading" d={arc(0, 100)} pathLength="100" style={`--at: ${end}`} data-arc />
+				{
+					[0, 40, 70, 90, 100].map((v) => {
+						const p = point(v, R + 11);
+						return (
+							<text class="tick" x={p.x.toFixed(1)} y={(p.y + 3).toFixed(1)} text-anchor="middle">
+								{v}
+							</text>
+						);
+					})
+				}
+			</svg>
+			<p class="run-score"><span data-score>{end}</span><span class="of">/100</span></p>
+			<p class="run-band"><span class="dot"></span><span data-band>{band(end)}</span></p>
+		</div>
+
+		<div class="run-rows">
+			<ol data-rows>
+				{
+					rows.map((r) => (
+						<li data-rule={r.id} data-start={r.start} data-end={r.end} data-state={r.end}>
+							<span class="light" />
+							<code>{r.id}</code>
+							<span class="prio">{priority[r.id]}</span>
+							<span class="what">{text[r.id]}</span>
+							<span class="said" data-said>{words[r.end]}</span>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</div>
+
+	<div class="run-foot">
+		<p class="run-gate" aria-hidden="true" data-gate>
+			<span class="dot"></span><span data-gate-text>Gate clear: {gate.split(',')[0]}.</span>
+		</p>
+		<p class="run-tally" aria-hidden="true">
+			{verified} verified, {carried} pass once their file exists, {review} left for manual review
+		</p>
+		<button class="run-replay" type="button" data-replay hidden>Replay the run</button>
+	</div>
+
+	<figcaption id="run-caption" class="sr-only">
+		A recorded ProdPilot run on the sample project {hero.sample}. The audit scored it {start} out of 100, with
+		{hero.start.failing.length} rules failing, {hero.start.critical.length} of them critical. The verifier confirmed
+		{verified} fixes, {carried} more rules passed once other fixes created the files they check, and {review} were left
+		for manual review. The project finished at {end}, {band(end)}, and the gate said: {gate}.
+	</figcaption>
+</figure>
+
+<script>
+	import hero from '../data/hero.json';
+
+	const root = document.querySelector<HTMLElement>('[data-run]');
+	const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+	if (root && !still.matches) {
+		const scoreEl = root.querySelector<HTMLElement>('[data-score]')!;
+		const bandEl = root.querySelector<HTMLElement>('[data-band]')!;
+		const arcEl = root.querySelector<SVGPathElement>('[data-arc]')!;
+		const gateEl = root.querySelector<HTMLElement>('[data-gate-text]')!;
+		const list = root.querySelector<HTMLElement>('[data-rows]')!;
+		const rows = [...root.querySelectorAll<HTMLElement>('[data-rule]')];
+		const replay = root.querySelector<HTMLButtonElement>('[data-replay]')!;
+
+		const words: Record<string, string> = {
+			failed: 'fails in production',
+			idle: 'does not apply',
+			verified: 'verified',
+			carried: 'passes, file exists',
+			review: 'manual review',
+		};
+		const bands: [number, string][] = [
+			[90, 'Production Ready'],
+			[70, 'Nearly Ready'],
+			[40, 'Needs Work'],
+			[0, 'Not Ready'],
+		];
+		const bandOf = (v: number) => bands.find(([floor]) => v >= floor)![1];
+		const gateLine = root.querySelector<HTMLElement>('[data-gate-text]')!.textContent!;
+
+		function set(row: HTMLElement, state: string) {
+			row.dataset.state = state;
+			row.querySelector<HTMLElement>('[data-said]')!.textContent = words[state];
+		}
+
+		function show(score: number, state: string) {
+			scoreEl.textContent = String(score);
+			bandEl.textContent = bandOf(score);
+			arcEl.style.setProperty('--at', String(score));
+			root!.dataset.state = state;
+		}
+
+		// Keep the row being checked in view inside the window.
+		function follow(row: HTMLElement) {
+			const window_ = list.parentElement!;
+			const offset = row.offsetTop - window_.clientHeight / 2 + row.offsetHeight / 2;
+			const max = list.scrollHeight - window_.clientHeight;
+			list.style.transform = `translateY(${-Math.min(Math.max(offset, 0), Math.max(max, 0))}px)`;
+		}
+
+		let timers: number[] = [];
+		const later = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
+
+		function play() {
+			timers.forEach(clearTimeout);
+			timers = [];
+			replay.hidden = true;
+			list.setAttribute('data-follow', '');
+			rows.forEach((row) => set(row, row.dataset.start!));
+			follow(rows[0]);
+			show(hero.start.score, 'failed');
+			gateEl.textContent = `Audit: ${hero.start.failing.length} rules failing, ${hero.start.critical.length} critical.`;
+
+			const STEP = 520;
+			hero.steps.forEach((s, i) => {
+				const row = rows[i];
+				later(900 + i * STEP, () => {
+					follow(row);
+					set(row, 'checking');
+					show(s.score, 'checking');
+				});
+				later(900 + i * STEP + 300, () => set(row, row.dataset.end!));
+			});
+			const done = 900 + hero.steps.length * STEP;
+			rows.slice(hero.steps.length).forEach((row, i) => {
+				later(done + i * 260, () => {
+					follow(row);
+					set(row, 'review');
+				});
+			});
+			later(done + 900, () => {
+				show(hero.end.score, 'verified');
+				gateEl.textContent = gateLine;
+				replay.hidden = false;
+			});
+		}
+
+		let played = false;
+		new IntersectionObserver(
+			(entries) => {
+				if (!played && entries.some((e) => e.isIntersecting)) {
+					played = true;
+					play();
+				}
+			},
+			{ threshold: 0.35 }
+		).observe(root);
+		replay.addEventListener('click', play);
+	}
+</script>
