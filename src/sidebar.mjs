@@ -1,4 +1,8 @@
 // The docs navigation. Slugs are paths under src/content/docs.
+//
+// Every group after Getting Started starts collapsed, and Starlight opens the
+// group that holds the current page, so the whole navigation fits one screen:
+// every group is visible and every page is one click away.
 
 const page = (label, slug) => ({ label, slug: `docs/${slug}` });
 
@@ -21,6 +25,7 @@ export const sidebar = [
 	},
 	{
 		label: 'Concepts',
+		collapsed: true,
 		items: [
 			page('The five layers', 'concepts/five-layers'),
 			page('Fix types', 'concepts/fix-types'),
@@ -32,6 +37,7 @@ export const sidebar = [
 	},
 	{
 		label: 'ProdPush',
+		collapsed: true,
 		items: [
 			page('1. Pre-flight checks', 'prodpush/preflight'),
 			page('2. Environment sealing', 'prodpush/sealing'),
@@ -46,6 +52,7 @@ export const sidebar = [
 	},
 	{
 		label: 'Reference',
+		collapsed: true,
 		items: [
 			page('CLI commands', 'reference/cli'),
 			page('MCP tools', 'reference/mcp-tools'),
@@ -56,6 +63,7 @@ export const sidebar = [
 	},
 	{
 		label: 'Results',
+		collapsed: true,
 		items: [
 			page('Evaluation', 'results/evaluation'),
 			page('Metrics', 'results/metrics'),
@@ -64,6 +72,7 @@ export const sidebar = [
 	},
 	{
 		label: 'Help',
+		collapsed: true,
 		items: [
 			page('Troubleshooting', 'help/troubleshooting'),
 			page('FAQ', 'help/faq'),

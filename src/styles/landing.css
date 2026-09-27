@@ -6,7 +6,8 @@
  * the hero stage, the layers, the flight log, the editors and the commands.
  *
  * Type: Newsreader, an editorial serif, sets headlines and figures. IBM Plex
- * Sans sets reading text. B612 Mono, the cockpit face, sets anything technical.
+ * Sans sets reading text. IBM Plex Mono sets anything technical; its full stop
+ * sits in the middle of its cell, so package.json and 1.0.0 read as written.
  *
  * The three indicator colours keep their meaning here as in the docs: amber is
  * a check in progress, green is verified, red is failed. Each plate defines its
@@ -16,7 +17,7 @@
 :root {
 	--serif: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
 	--sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-	--mono: 'B612 Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+	--mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
 	--ground: #0a0908;
 	--stone: #d8cec2;

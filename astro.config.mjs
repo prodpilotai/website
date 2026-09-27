@@ -25,8 +25,8 @@ export default defineConfig({
 			social: [{ icon: 'github', label: 'ProdPilot on GitHub', href: repo }],
 			customCss: [
 				'@fontsource-variable/newsreader/opsz.css',
-				'@fontsource/b612-mono/400.css',
-				'@fontsource/b612-mono/700.css',
+				'@fontsource/ibm-plex-mono/400.css',
+				'@fontsource/ibm-plex-mono/600.css',
 				'@fontsource/ibm-plex-sans/400.css',
 				'@fontsource/ibm-plex-sans/600.css',
 				'./src/styles/tokens.css',

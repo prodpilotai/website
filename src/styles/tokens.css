@@ -6,8 +6,9 @@
  * stone in light mode and night in dark mode.
  *
  * Type: Newsreader, an editorial serif, sets headlines. IBM Plex Sans sets
- * reading text. B612 Mono, the typeface commissioned for cockpit displays, sets
- * anything technical.
+ * reading text. IBM Plex Mono sets anything technical, code included; B612 Mono,
+ * used before, drew its full stop at the left of the cell, so package.json
+ * read as package. json.
  *
  * Three indicator colours carry meaning and are never used for decoration:
  * amber is a check in progress, green is verified, red is failed.
@@ -16,7 +17,7 @@
 :root {
 	--pp-display: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
 	--pp-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-	--pp-mono: 'B612 Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+	--pp-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
 	--pp-stone: #d8cec2;
 	--pp-night: #0f0e0c;

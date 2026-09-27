@@ -74,7 +74,7 @@ const pyramid = `
 const homeCss = `
 @font-face { font-family: 'Newsreader'; font-weight: 200 800; src: url(${font('@fontsource-variable/newsreader', 'newsreader-latin-opsz-normal.woff2')}); }
 @font-face { font-family: 'Newsreader'; font-style: italic; font-weight: 200 800; src: url(${font('@fontsource-variable/newsreader', 'newsreader-latin-opsz-italic.woff2')}); }
-@font-face { font-family: 'B612 Mono'; font-weight: 400; src: url(${font('@fontsource/b612-mono', 'b612-mono-latin-400-normal.woff2')}); }
+@font-face { font-family: 'IBM Plex Mono'; font-weight: 400; src: url(${font('@fontsource/ibm-plex-mono', 'ibm-plex-mono-latin-400-normal.woff2')}); }
 * { box-sizing: border-box; margin: 0; }
 body { width: 1200px; height: 630px; background: #0a0908; padding: 14px; font-family: sans-serif; display: grid; grid-template-columns: 430px 1fr; gap: 14px; }
 .side { background: #d8cec2; color: #1c1814; border-radius: 16px; padding: 38px 40px; display: flex; flex-direction: column; justify-content: space-between; }
@@ -82,14 +82,14 @@ body { width: 1200px; height: 630px; background: #0a0908; padding: 14px; font-fa
 .brand svg { width: 44px; height: 44px; }
 h1 { font-family: 'Newsreader'; font-weight: 360; font-size: 58px; line-height: 1; letter-spacing: -1.3px; }
 h1 em { display: block; font-style: italic; font-weight: 330; color: #574d43; margin-top: 8px; }
-.cmd { font-family: 'B612 Mono'; font-size: 19px; padding: 12px 16px; border: 1px solid rgba(28,24,20,0.2); border-radius: 8px; background: rgba(28,24,20,0.05); }
+.cmd { font-family: 'IBM Plex Mono'; font-size: 19px; padding: 12px 16px; border: 1px solid rgba(28,24,20,0.2); border-radius: 8px; background: rgba(28,24,20,0.05); }
 .stage { position: relative; background: radial-gradient(60% 55% at 50% 58%, rgba(226,189,121,0.08), transparent 70%), #0f0e0c; border-radius: 16px; overflow: hidden; }
 .stage svg { position: absolute; left: 34px; top: 40px; }
-.read { position: absolute; left: 34px; top: 34px; font-family: 'B612 Mono'; color: #aaa196; font-size: 14px; letter-spacing: 1px; }
+.read { position: absolute; left: 34px; top: 34px; font-family: 'IBM Plex Mono'; color: #aaa196; font-size: 14px; letter-spacing: 1px; }
 .score { font-family: 'Newsreader'; font-weight: 300; font-size: 76px; color: #efe8de; line-height: 1; margin-top: 10px; letter-spacing: -2px; }
 .score small { font-size: 24px; color: #aaa196; letter-spacing: 0; }
 .band { color: #45d483; margin-top: 8px; font-size: 15px; letter-spacing: 2px; }
-.foot { position: absolute; left: 34px; right: 34px; bottom: 30px; font-family: 'B612 Mono'; font-size: 16px; color: #aaa196; display: flex; justify-content: space-between; }
+.foot { position: absolute; left: 34px; right: 34px; bottom: 30px; font-family: 'IBM Plex Mono'; font-size: 16px; color: #aaa196; display: flex; justify-content: space-between; }
 `;
 
 const home = `<!doctype html><html><head><meta charset="utf-8"><style>${homeCss}</style></head><body>
@@ -109,7 +109,7 @@ const home = `<!doctype html><html><head><meta charset="utf-8"><style>${homeCss}
 
 const docsCss = `
 @font-face { font-family: 'Newsreader'; font-weight: 200 800; src: url(${font('@fontsource-variable/newsreader', 'newsreader-latin-opsz-normal.woff2')}); }
-@font-face { font-family: 'B612 Mono'; font-weight: 400; src: url(${font('@fontsource/b612-mono', 'b612-mono-latin-400-normal.woff2')}); }
+@font-face { font-family: 'IBM Plex Mono'; font-weight: 400; src: url(${font('@fontsource/ibm-plex-mono', 'ibm-plex-mono-latin-400-normal.woff2')}); }
 @font-face { font-family: 'IBM Plex Sans'; font-weight: 400; src: url(${font('@fontsource/ibm-plex-sans', 'ibm-plex-sans-latin-400-normal.woff2')}); }
 * { box-sizing: border-box; margin: 0; }
 body { width: 1200px; height: 630px; background: #0a0908; padding: 14px; color: #efe8de; font-family: 'IBM Plex Sans', sans-serif; }
@@ -117,11 +117,11 @@ body { width: 1200px; height: 630px; background: #0a0908; padding: 14px; color: 
 	background: radial-gradient(60% 70% at 80% 40%, rgba(226,189,121,0.09), transparent 70%), #0f0e0c; }
 .brand { display: flex; align-items: center; gap: 12px; font-family: 'Newsreader'; font-size: 32px; margin-bottom: 40px; }
 .brand svg { width: 44px; height: 44px; }
-.label { font-family: 'B612 Mono'; font-size: 15px; letter-spacing: 3px; color: #aaa196; margin-bottom: 14px; }
+.label { font-family: 'IBM Plex Mono'; font-size: 15px; letter-spacing: 3px; color: #aaa196; margin-bottom: 14px; }
 h1 { font-family: 'Newsreader'; font-weight: 340; font-size: 70px; line-height: 1; letter-spacing: -2px; }
 .sub { margin-top: 24px; font-size: 22px; line-height: 1.45; color: #aaa196; max-width: 560px; }
 .rows { list-style: none; padding: 0; border-top: 1px solid rgba(239,232,222,0.14); }
-.rows li { display: flex; align-items: center; gap: 18px; padding: 19px 4px; border-bottom: 1px solid rgba(239,232,222,0.14); font-family: 'B612 Mono'; font-size: 20px; letter-spacing: 1px; }
+.rows li { display: flex; align-items: center; gap: 18px; padding: 19px 4px; border-bottom: 1px solid rgba(239,232,222,0.14); font-family: 'IBM Plex Mono'; font-size: 20px; letter-spacing: 1px; }
 .rows i { width: 9px; height: 9px; border-radius: 50%; background: #45d483; box-shadow: 0 0 12px #45d483aa; }
 `;
 
