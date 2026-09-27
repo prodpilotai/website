@@ -1,14 +1,17 @@
 ---
-// Scroll and motion for the landing page. Everything here is an enhancement:
-// without a script, or with reduced motion requested, the page renders in its
-// final state and scrolls natively.
+// Scroll and motion for the landing page.
+//
+// Nothing here hides, moves or rewrites content. Every section is complete in
+// the HTML and fully visible with no script, with reduced motion, and in a
+// full-page capture that never scrolls. What remains is motion that explains
+// something or helps navigation: smooth scrolling, the dock once the hero has
+// gone, its progress line, and the checklist rows being checked as they arrive.
 ---
 
 <script>
 	import Lenis from 'lenis';
 
 	const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-	const root = document.documentElement;
 
 	// ---- The dock: a header that appears once the hero has scrolled away ----
 	const dock = document.querySelector<HTMLElement>('[data-dock]');
@@ -25,7 +28,7 @@
 		).observe(hero);
 	}
 
-	// ---- The layer in view lights its band in the section drawing ----------
+	// ---- The layer in view is marked in the sequence ------------------------
 	const how = document.querySelector<HTMLElement>('#how');
 	if (how) {
 		const watch = new IntersectionObserver(
@@ -40,7 +43,7 @@
 	}
 
 	if (!still) {
-		root.classList.add('motion');
+		document.documentElement.classList.add('motion');
 
 		// ---- Smooth scrolling ------------------------------------------------
 		const lenis = new Lenis({
@@ -50,104 +53,30 @@
 			allowNestedScroll: true,
 			stopInertiaOnNavigate: true,
 		});
+		const update = ({ scroll, limit }: { scroll: number; limit: number }) => {
+			if (progress) progress.style.transform = `scaleX(${limit ? scroll / limit : 0})`;
+		};
+		lenis.on('scroll', update);
+		update({ scroll: window.scrollY, limit: document.documentElement.scrollHeight - window.innerHeight });
 
-		// ---- Reveals: each block rises into place, its parts in sequence -------
-		const parts = document.querySelectorAll<HTMLElement>(
-			[
-				'.plate:not(.hero-side):not(.hero-stage) .head > *',
-				'.checklist > li',
-				'.layers > li',
-				'.why > article',
-				'.log > div',
-				'.steps > li',
-				'.ides tbody tr',
-				'.limits > li',
-				'.contact > li',
-				'.plate > .more',
-				'.section-drawing',
-				'.live > :not(ol)',
-				'.footer-lead > *',
-				'.footer-grid > div',
-				'.wordmark',
-			].join(',')
-		);
-		parts.forEach((el) => {
-			const siblings = el.parentElement ? [...el.parentElement.children] : [el];
-			el.style.setProperty('--i', String(Math.min(siblings.indexOf(el), 8)));
-			el.dataset.reveal = '';
-		});
-		const reveal = new IntersectionObserver(
+		// ---- Checklist rows are checked as they arrive -------------------------
+		// Each row is "fails in production" in the HTML and stays that way. When a
+		// row first comes into view it shows "checking" for a moment, then returns
+		// to its real state, which is what the pre-flight check does.
+		const rows = document.querySelectorAll<HTMLElement>('[data-checklist] .check');
+		const seen = new IntersectionObserver(
 			(entries) => {
 				for (const e of entries) {
 					if (!e.isIntersecting) continue;
-					e.target.classList.add('in');
-					reveal.unobserve(e.target);
-				}
-			},
-			{ rootMargin: '0px 0px -8% 0px', threshold: 0.12 }
-		);
-		parts.forEach((el) => reveal.observe(el));
-
-		// ---- Figures count up the first time they are seen --------------------
-		const figures = document.querySelectorAll<HTMLElement>('.log .value:not(.demo)');
-		const count = new IntersectionObserver(
-			(entries) => {
-				for (const e of entries) {
-					if (!e.isIntersecting) continue;
-					count.unobserve(e.target);
-					const el = e.target as HTMLElement;
-					const text = el.textContent ?? '';
-					const target = Number(text.replace(/[^\d]/g, ''));
-					const suffix = text.replace(/[\d,]/g, '');
-					const grouped = text.includes(',');
-					if (!target) continue;
-					el.setAttribute('aria-label', text);
-					const began = performance.now();
-					const step = (now: number) => {
-						const t = Math.min((now - began) / 1600, 1);
-						const eased = 1 - Math.pow(1 - t, 4);
-						const n = Math.round(target * eased);
-						el.textContent = (grouped ? n.toLocaleString('en-US') : String(n)) + suffix;
-						if (t < 1) requestAnimationFrame(step);
-					};
-					requestAnimationFrame(step);
+					const row = e.target as HTMLElement;
+					seen.unobserve(row);
+					const real = row.dataset.state ?? 'failed';
+					row.dataset.state = 'checking';
+					setTimeout(() => (row.dataset.state = real), 700);
 				}
 			},
 			{ threshold: 0.6 }
 		);
-		figures.forEach((el) => count.observe(el));
-
-		// ---- Scroll-linked: plates lift in, the hero eases away ---------------
-		const plates = [...document.querySelectorAll<HTMLElement>('main > .plate')];
-		const side = document.querySelector<HTMLElement>('.hero-copy');
-		const stage = document.querySelector<HTMLElement>('.hero-stage .stage');
-		const settled = new WeakSet<HTMLElement>();
-
-		function frame({ scroll, limit }: { scroll: number; limit: number }) {
-			const vh = window.innerHeight;
-			if (progress) progress.style.transform = `scaleX(${limit ? scroll / limit : 0})`;
-
-			for (const plate of plates) {
-				if (settled.has(plate)) continue;
-				const top = plate.getBoundingClientRect().top;
-				const p = Math.min(Math.max((vh - top) / (vh * 0.45), 0), 1);
-				if (p >= 1) {
-					plate.style.transform = '';
-					settled.add(plate);
-				} else {
-					const eased = 1 - Math.pow(1 - p, 3);
-					plate.style.transform = `translateY(${(1 - eased) * 70}px) scale(${0.965 + 0.035 * eased})`;
-				}
-			}
-
-			if (hero && scroll < hero.offsetHeight * 1.2) {
-				const p = scroll / Math.max(hero.offsetHeight, 1);
-				if (side) side.style.transform = `translateY(${p * -40}px)`;
-				if (stage) stage.style.transform = `translateY(${p * 70}px) scale(${1 + p * 0.05})`;
-			}
-		}
-
-		lenis.on('scroll', frame);
-		frame({ scroll: window.scrollY, limit: document.documentElement.scrollHeight - window.innerHeight });
+		rows.forEach((row) => seen.observe(row));
 	}
 </script>

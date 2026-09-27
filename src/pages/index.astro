@@ -584,29 +584,3 @@ const proof = [
 	</svg>
 	<Motion />
 </Landing>
-
-<script>
-	// The gap checklist settles row by row as it scrolls into view: each rule is
-	// checked, amber, then shown failing, red.
-	// Rows render failing, which is the truth with or without this script. Rows
-	// still below the fold are set to checking so they settle as they arrive.
-	const rows = document.querySelectorAll<HTMLElement>('[data-checklist] .check');
-	const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-	if (!still && 'IntersectionObserver' in window) {
-		rows.forEach((row) => {
-			if (row.getBoundingClientRect().top > window.innerHeight) row.dataset.state = 'checking';
-		});
-		const seen = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (!entry.isIntersecting) return;
-					const row = entry.target as HTMLElement;
-					seen.unobserve(row);
-					setTimeout(() => (row.dataset.state = 'failed'), 650);
-				});
-			},
-			{ threshold: 0.6 }
-		);
-		rows.forEach((row) => seen.observe(row));
-	}
-</script>
