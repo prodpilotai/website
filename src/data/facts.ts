@@ -8,7 +8,9 @@ export const facts = {
 	// docs/compatibility.md, the compatibility matrix, recorded 14 September 2026.
 	ides: { count: 3, source: '/docs/results/compatibility/' },
 
-	// `python -m pytest --collect-only -q` at the v1.0.0 tag, commit 7b7693f, and
-	// the Tests workflow run on that commit, all 15 jobs passing.
+	// `python -m pytest --collect-only -q` at the v1.0.0 tag, commit 7b7693f, run
+	// again on 27 September 2026: 1,799 collected. The Tests workflow run on that
+	// commit, 35516692883, passed all 15 jobs: the suite on Linux, macOS and
+	// Windows with Python 3.11 to 3.14, and the wheel check on all three.
 	tests: { collected: 1799, source: '/docs/help/contributing/#tests' },
 };

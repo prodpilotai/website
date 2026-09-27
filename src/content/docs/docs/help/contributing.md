@@ -30,7 +30,7 @@ python -m pytest --collect-only -q
 - **Real samples.** The sample projects under `tests/samples/` are minimal but genuine, each with a real `package.json` and entry point. Several are broken on purpose.
 - **Launch commands.** `tests/test_clients.py` starts the server with the exact command the committed IDE configurations name, so a configuration that drifts from what works fails the suite.
 
-The Tests workflow runs the suite on Linux, macOS and Windows for Python 3.11, 3.12, 3.13 and 3.14, and builds the wheel on all three systems, installs it outside the repository and loads the shipped model. That is 15 jobs; all 15 passed on the v1.0.0 commit.
+The Tests workflow runs the suite on Linux, macOS and Windows for Python 3.11, 3.12, 3.13 and 3.14, and builds the wheel on all three systems, installs it outside the repository and loads the shipped model. That is 15 jobs; all 15 passed on the v1.0.0 commit, in [run 35516692883](https://github.com/prodpilotai/ProdPilot/actions/runs/35516692883). The macOS and Windows runners have no Docker daemon, so there the tests that build a real image are skipped; they run on Linux.
 
 ## The whole chain
 
