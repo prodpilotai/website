@@ -105,46 +105,31 @@ const layers = [
 	},
 ];
 
-// The section drawing beside the layers: the hero's pyramid cut through and
-// turned point down, one band per layer, so it reads top to bottom in the order
-// the layers run, like the list beside it. Detect is the widest band at the top;
-// the project narrows to ProdPush at the point.
-const BAND = 44;
-const WIDE = 300;
-const TOP = 12;
-const POINT = TOP + 5 * BAND;
-const drawing = layers.map((l) => {
-	const y0 = TOP + l.n * BAND;
-	const y1 = y0 + BAND;
-	const half = (y: number) => (WIDE / 2) * ((POINT - y) / (POINT - TOP));
-	return {
-		...l,
-		points: `${160 - half(y0)},${y0} ${160 + half(y0)},${y0} ${160 + half(y1)},${y1} ${160 - half(y1)},${y1}`,
-		label: y0 + BAND / 2 + 4,
-	};
-});
-
 const proof = [
-	{ value: String(reference.rules), label: 'Production rules checked', source: 'Rule catalog', href: '/docs/reference/rules/' },
+	{ channel: 'Rules', value: String(reference.rules), label: 'Production rules checked', source: 'Rule catalog', href: '/docs/reference/rules/' },
 	{
+		channel: 'Deterministic',
 		value: `${percent}%`,
 		label: `Rules fixed with no model writing anything: ${reference.deterministic} of ${reference.rules}`,
 		source: 'Metrics',
 		href: '/docs/results/metrics/#determinism-ratio',
 	},
 	{
+		channel: 'Deployments',
 		value: String(facts.deployments.total),
 		label: `Real Render deployments behind the gate's model, of which ${facts.deployments.live} went live`,
 		source: 'Evaluation',
 		href: facts.deployments.source,
 	},
 	{
+		channel: 'Editors',
 		value: String(facts.ides.count),
 		label: 'IDEs verified with all five tools and both contract forms',
 		source: 'Compatibility matrix',
 		href: facts.ides.source,
 	},
 	{
+		channel: 'Tests',
 		value: grouped(facts.tests.collected),
 		label: `Automated tests at version ${reference.version}. The suite passes on Linux, macOS and Windows, Python 3.11 to 3.14`,
 		source: 'Contributing',
@@ -217,69 +202,63 @@ const proof = [
 						part your laptop fills in without asking. A real server fills in none of it. Each of these is a rule
 						ProdPilot checks.
 					</p>
+					<ul class="legend" aria-label="Status key">
+						<li data-state="checking"><span class="box" aria-hidden="true"></span>Checking</li>
+						<li data-state="verified"><span class="box" aria-hidden="true"></span>Verified</li>
+						<li data-state="failed"><span class="box" aria-hidden="true"></span>Fails in production</li>
+					</ul>
 				</header>
-				<ol class="checklist ledger" data-checklist>
-					{
-						gap.map((g) => (
-							<li class="check" data-state="failed">
-								<span class="light" aria-hidden="true" />
-								<div>
-									<h3>{g.title}</h3>
-									<p>{g.detail}</p>
-								</div>
-								<a class="rule" href={`/docs/reference/rules/#${g.anchor}`}>
-									{g.rule} <span class="prio">{g.priority}</span>
-								</a>
-								<span class="verdict">
-									<span class="when-failed">
-										<span class="sr-only">Status: </span>fails in production
+				<div class="preflight">
+					<p class="preflight-head" aria-hidden="true">
+						<span>Pre-flight checklist</span><span>Target: localhost</span><span>{gap.length} of {gap.length} failing</span>
+					</p>
+					<ol class="checklist" data-checklist>
+						{
+							gap.map((g, i) => (
+								<li class="check" data-state="failed">
+									<span class="box" aria-hidden="true" />
+									<div>
+										<p class="item" aria-hidden="true">Item {String(i + 1).padStart(2, '0')}</p>
+										<h3>{g.title}</h3>
+										<p>{g.detail}</p>
+									</div>
+									<a class="rule" href={`/docs/reference/rules/#${g.anchor}`}>
+										{g.rule} <span class="prio">{g.priority}</span>
+									</a>
+									<span class="verdict">
+										<span class="when-failed">
+											<span class="sr-only">Status: </span>fails in production
+										</span>
+										<span class="when-checking" aria-hidden="true">checking</span>
 									</span>
-									<span class="when-checking" aria-hidden="true">checking</span>
-								</span>
-							</li>
-						))
-					}
-				</ol>
+								</li>
+							))
+						}
+					</ol>
+				</div>
 			</div>
 		</section>
 
 		<section class="plate night" id="how" aria-labelledby="path-title">
-			<div class="split">
-				<header class="head">
-					<p class="label">How it works</p>
-					<h2 id="path-title">Five layers, in the order they run</h2>
-					<p class="intro">
-						Always in this order. Nothing moves to the next layer until the one before it holds.
-					</p>
-					<svg class="section-drawing" viewBox="0 0 320 262" aria-hidden="true">
-						<line class="floor" x1="0" y1="11.5" x2="320" y2="11.5" />
-						{
-							drawing.map((d) => (
-								<g class={`band band-${d.n}`}>
-									<polygon points={d.points} pathLength="1" />
-									<text x="160" y={d.label} text-anchor="middle">{d.n}</text>
-								</g>
-							))
-						}
-					</svg>
-				</header>
-				<ol class="layers">
-					{
-						layers.map((l) => (
-							<li data-layer={l.n}>
-								<span class="num" aria-hidden="true">{l.n}</span>
-								<div>
-									<h3>
-										<span class="sr-only">Layer {l.n}: </span>
-										{l.name}
-									</h3>
-									<p>{l.text}</p>
-								</div>
-							</li>
-						))
-					}
-				</ol>
-			</div>
+			<header class="head wide">
+				<p class="label">How it works</p>
+				<h2 id="path-title">Five layers, in the order they run</h2>
+				<p class="intro">Always in this order. Nothing moves to the next layer until the one before it holds.</p>
+			</header>
+			<ol class="sequence">
+				{
+					layers.map((l) => (
+						<li data-layer={l.n}>
+							<span class="node" aria-hidden="true">{l.n}</span>
+							<h3>
+								<span class="sr-only">Layer {l.n}: </span>
+								{l.name}
+							</h3>
+							<p>{l.text}</p>
+						</li>
+					))
+				}
+			</ol>
 			<p class="more"><a href="/docs/concepts/five-layers/">The five layers in detail</a></p>
 		</section>
 
@@ -324,27 +303,65 @@ const proof = [
 			<header class="head wide">
 				<p class="label">Proof</p>
 				<h2 id="log-title">The flight log</h2>
-				<p class="intro">Every figure links to the page where it was measured.</p>
+				<p class="intro">Every reading links to the page where it was measured.</p>
 			</header>
 			<dl class="log">
 				{
 					proof.map((p) => (
 						<div>
 							<dt>{p.label}</dt>
-							<dd class="value">{p.value}</dd>
-							<dd class="source"><a href={p.href}>{p.source}</a></dd>
+							<dd class="value"><span class="channel" aria-hidden="true">{p.channel}</span>{p.value}</dd>
+							<dd class="source"><a href={p.href}>Source: {p.source}</a></dd>
 						</div>
 					))
 				}
 				<div>
 					<dt>Live demo, deployed by ProdPilot</dt>
-					<dd class="value demo"><a href={demo}>prodpilot-demo.onrender.com</a></dd>
-					<dd class="source"><a href="/docs/getting-started/introduction/#see-it-running">About the demo</a></dd>
+					<dd class="value demo"><span class="channel" aria-hidden="true">Live demo</span><a href={demo}>prodpilot-demo.onrender.com</a></dd>
+					<dd class="source"><a href="/docs/getting-started/introduction/#see-it-running">Source: About the demo</a></dd>
 				</div>
 			</dl>
 		</section>
 
-		<section class="plate stone" id="live" aria-labelledby="live-title">
+		<section class="plate stone" id="limits" aria-labelledby="limits-title">
+			<header class="head wide">
+				<p class="label">Honest limits</p>
+				<h2 id="limits-title">What it does not do</h2>
+				<p class="intro">
+					Stated here, next to the proof, so you do not find them the hard way. Each one comes from the project's
+					own records.
+				</p>
+			</header>
+			<ul class="limits">
+				<li>
+					<strong>Two stacks.</strong> Node.js with Express, and React with Vite. Anything else is reported as
+					unrecognized rather than guessed.
+				</li>
+				<li><strong>One provider.</strong> Render is the only deployment target.</li>
+				<li>
+					<strong>Six fixes are written by your agent.</strong> ProdPilot verifies each one, but how often a live
+					agent's change passes on the first try has not been measured yet.
+				</li>
+				<li>
+					<strong>Your editor decides when to ask.</strong> On Cursor's fresh install default nothing in the
+					editor stops the agent calling the deploy tool; only the tool's own instruction asks it to confirm
+					with you.
+				</li>
+				<li>
+					<strong>Not yet observed end to end on a live service:</strong> a deploy started by an IDE agent, and
+					the CI/CD workflow as 1.0.0 writes it. An earlier version, which waited a fixed 90 seconds, redeployed
+					the live demo from GitHub Actions twice; the current one waits for the deploy it started and has not
+					yet run against a live service.
+				</li>
+				<li>
+					<strong>It needs your machine.</strong> Docker running, Node.js 20 or later, git, a GitHub token and a
+					Render API key.
+				</li>
+		</ul>
+			<p class="more"><a href="/docs/help/limitations/">All known limitations</a></p>
+		</section>
+
+		<section class="plate night" id="live" aria-labelledby="live-title">
 			<div class="split">
 				<header class="head">
 					<p class="label">Live check</p>
@@ -359,7 +376,7 @@ const proof = [
 			</div>
 		</section>
 
-		<section class="plate night" id="works" aria-labelledby="ide-title">
+		<section class="plate stone" id="works" aria-labelledby="ide-title">
 			<header class="head wide">
 				<p class="label">Works with</p>
 				<h2 id="ide-title">Three editors, verified</h2>
@@ -404,42 +421,6 @@ const proof = [
 			</p>
 		</section>
 
-		<section class="plate stone" id="limits" aria-labelledby="limits-title">
-			<div class="split">
-				<header class="head">
-					<p class="label">Honest limits</p>
-					<h2 id="limits-title">What it does not do</h2>
-					<p class="more"><a href="/docs/help/limitations/">All known limitations</a></p>
-				</header>
-				<ul class="limits">
-					<li>
-						<strong>Two stacks.</strong> Node.js with Express, and React with Vite. Anything else is reported as
-						unrecognized rather than guessed.
-					</li>
-					<li><strong>One provider.</strong> Render is the only deployment target.</li>
-					<li>
-						<strong>Six fixes are written by your agent.</strong> ProdPilot verifies each one, but how often a live
-						agent's change passes on the first try has not been measured yet.
-					</li>
-					<li>
-						<strong>Your editor decides when to ask.</strong> On Cursor's fresh install default nothing in the
-						editor stops the agent calling the deploy tool; only the tool's own instruction asks it to confirm
-						with you.
-					</li>
-					<li>
-						<strong>Not yet observed end to end on a live service:</strong> a deploy started by an IDE agent, and
-						the CI/CD workflow as 1.0.0 writes it. An earlier version, which waited a fixed 90 seconds, redeployed
-						the live demo from GitHub Actions twice; the current one waits for the deploy it started and has not
-						yet run against a live service.
-					</li>
-					<li>
-						<strong>It needs your machine.</strong> Docker running, Node.js 20 or later, git, a GitHub token and a
-						Render API key.
-					</li>
-				</ul>
-			</div>
-		</section>
-
 		<section class="plate night" id="start" aria-labelledby="start-title">
 			<header class="head wide">
 				<p class="label">Get started</p>
@@ -461,10 +442,39 @@ const proof = [
 					<p class="fine">Or <code>cursor</code>, or <code>devin --project PATH</code>.</p>
 				</li>
 			</ol>
-			<p class="more">
-				Then run <code>prodpilot doctor</code> and ask your agent: "Use ProdPilot to audit this project and fix what
-				it reports, one rule at a time." <a href="/docs/getting-started/quickstart/">Quickstart</a>
-			</p>
+			<div class="doctor">
+				<div class="doctor-copy">
+					<h3>Then check everything is in place</h3>
+					<p>
+						<code>prodpilot doctor</code> checks your credentials, git, Node.js and Docker, and exits non-zero if
+						anything required is missing. When it passes, ask your agent: "Use ProdPilot to audit this project and
+						fix what it reports, one rule at a time."
+					</p>
+					<a href="/docs/getting-started/quickstart/">The quickstart, step by step</a>
+				</div>
+				<figure class="terminal">
+					<div class="terminal-bar" aria-hidden="true"><span></span><span></span><span></span><code>prodpilot doctor</code></div>
+					<pre><code><span class="prompt">$</span> prodpilot doctor
+ProdPilot doctor
+
+Config file: ~/.prodpilot/config.toml
+  <span class="ok">found</span>
+  github_token: <span class="ok">stored</span>
+  render_api_key: <span class="ok">stored</span>
+  permissions: access is limited to the current user
+
+Tools ProdPilot runs:
+  git: git version 2.54.0.windows.1
+  Node.js: v26.3.0
+  Docker: daemon 29.7.2
+
+<span class="ok">All checks passed.</span></code></pre>
+					<figcaption>
+						Real output from ProdPilot {reference.version}, captured on 25 September 2026. The home directory is shown
+						as <code>~</code>.
+					</figcaption>
+				</figure>
+			</div>
 		</section>
 
 		<section class="plate stone" id="contact" aria-labelledby="contact-title">

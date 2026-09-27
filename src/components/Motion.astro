@@ -28,20 +28,6 @@
 		).observe(hero);
 	}
 
-	// ---- The layer in view is marked in the sequence ------------------------
-	const how = document.querySelector<HTMLElement>('#how');
-	if (how) {
-		const watch = new IntersectionObserver(
-			(entries) => {
-				for (const e of entries) {
-					if (e.isIntersecting) how.dataset.active = (e.target as HTMLElement).dataset.layer;
-				}
-			},
-			{ rootMargin: '-45% 0px -45% 0px' }
-		);
-		how.querySelectorAll('[data-layer]').forEach((li) => watch.observe(li));
-	}
-
 	if (!still) {
 		document.documentElement.classList.add('motion');
 
