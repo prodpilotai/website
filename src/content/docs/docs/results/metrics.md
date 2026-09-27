@@ -92,32 +92,32 @@ The contract itself has been checked in real clients: the agents of VS Code with
 
 The run the landing page replays. The `node_express_insecure` sample, taken through the whole chain by ProdPilot 1.0.0 with `python tests/pipeline.py TRACE.json node_express_insecure`. Its 28 Express rules at the start: 22 failing, 3 skipped, and 6 critical failures, **score 13**.
 
-Each row is a fix the verifier confirmed, in order, with the score after it, computed with the audit's own weights:
+The loop sent 33 fix contracts over two cycles, and the verifier confirmed 18 of them, one for each of 18 rules. Each row below is a rule that ended the run passing, with the score after it, computed with the audit's own weights: first the 18 whose own fix was verified, in the order it was, then the two that pass without one.
 
-| Rule | Priority | Fix type | What it requires | Score |
-| --- | --- | --- | --- | --- |
-| ENV-002 | P0 | STATIC | The listening port is read from the environment | 22 |
-| SEC-002 | P0 | STATIC | helmet is registered before any route | 31 |
-| SEC-003 | P0 | STATIC | The CORS origin comes from an environment variable | 40 |
-| SEC-004 | P0 | STATIC | Content Security Policy and HTTPS redirect are set | 49 |
-| BLD-001 | P1 | DYNAMIC-PARAMETRIC | A Dockerfile at the project root | 53 |
-| BLD-002 | P1 | STATIC | A `.dockerignore` | 58 |
-| BLD-003 | P1 | DYNAMIC-PARAMETRIC | A GitHub Actions workflow | 62 |
-| BLD-005 | P1 | STATIC | The Node engine pinned to 20 LTS | 66 |
-| BLD-006 | P1 | DYNAMIC-PARAMETRIC | A multi-stage Docker build | 71 |
-| API-001 | P2 | STATIC | Public routes are rate limited | 73 |
-| API-002 | P2 | DYNAMIC-PARAMETRIC | Routes under a versioned prefix | 75 |
-| OBS-001 | P4 | STATIC | A health check endpoint | 76 |
-| OBS-002 | P4 | STATIC | Structured logging | 76 |
-| OBS-003 | P4 | STATIC | Monitoring hooks the platform can scrape | 77 |
-| OBS-004 | P4 | STATIC | SIGTERM drains connections before exit | 77 |
-| GIT-001 | P5 | STATIC | A `.gitignore` | 78 |
-| GIT-002 | P5 | STATIC | `.gitignore` excludes `node_modules` | 78 |
-| ENV-001 | P0 | DYNAMIC-PARAMETRIC | `.env.example` covers every key the code reads | 80 |
-| SCR-001 | P0 | STATIC | `.gitignore` excludes `.env` and `.env.production` | 88 |
-| SEC-001 | P0 | STATIC | The container runs as a non-root user | 96 |
+| Rule | Priority | Fix type | What it requires | How it passed | Score |
+| --- | --- | --- | --- | --- | --- |
+| ENV-002 | P0 | STATIC | The listening port is read from the environment | Fix verified | 22 |
+| SEC-002 | P0 | STATIC | helmet is registered before any route | Fix verified | 31 |
+| SEC-003 | P0 | STATIC | The CORS origin comes from an environment variable | Fix verified | 40 |
+| SEC-004 | P0 | STATIC | Content Security Policy and HTTPS redirect are set | Fix verified | 49 |
+| BLD-001 | P1 | DYNAMIC-PARAMETRIC | A Dockerfile at the project root | Fix verified | 53 |
+| BLD-002 | P1 | STATIC | A `.dockerignore` | Fix verified | 58 |
+| BLD-003 | P1 | DYNAMIC-PARAMETRIC | A GitHub Actions workflow | Fix verified | 62 |
+| BLD-005 | P1 | STATIC | The Node engine pinned to 20 LTS | Fix verified | 66 |
+| BLD-006 | P1 | DYNAMIC-PARAMETRIC | A multi-stage Docker build | Fix verified | 71 |
+| API-001 | P2 | STATIC | Public routes are rate limited | Fix verified | 73 |
+| API-002 | P2 | DYNAMIC-PARAMETRIC | Routes under a versioned prefix | Fix verified | 75 |
+| OBS-001 | P4 | STATIC | A health check endpoint | Fix verified | 76 |
+| OBS-002 | P4 | STATIC | Structured logging | Fix verified | 76 |
+| OBS-003 | P4 | STATIC | Monitoring hooks the platform can scrape | Fix verified | 77 |
+| OBS-004 | P4 | STATIC | SIGTERM drains connections before exit | Fix verified | 77 |
+| GIT-001 | P5 | STATIC | A `.gitignore` | Fix verified | 78 |
+| GIT-002 | P5 | STATIC | `.gitignore` excludes `node_modules` | Fix verified | 78 |
+| ENV-001 | P0 | DYNAMIC-PARAMETRIC | `.env.example` covers every key the code reads | Fix verified | 80 |
+| SCR-001 | P0 | STATIC | `.gitignore` excludes `.env` and `.env.production` | Not by its own fix: passes once GIT-001 created `.gitignore` | 88 |
+| SEC-001 | P0 | STATIC | The container runs as a non-root user | Not by its own fix: passes once BLD-001 created the Dockerfile | 96 |
 
-ENV-001 was skipped at the start because the code read no environment variables; once ENV-002's fix made it read `PORT`, the rule applied and counted. SCR-001 and SEC-001 edit files that GIT-001 and BLD-001 create, so they failed the first cycle and passed on the second, [as described here](/docs/concepts/bounded-loop/#why-the-order-matters).
+ENV-001 was skipped at the start because the code read no environment variables; once ENV-002's fix made it read `PORT`, the rule applied and counted. SCR-001 and SEC-001 edit files that GIT-001 and BLD-001 create. Their own contracts ran before those files existed, failed three times and sent both rules to manual review, which is final; they pass by the end because the files were then created, [as described here](/docs/concepts/bounded-loop/#why-the-order-matters). The run's manual review list names them as unresolved after 3 attempts.
 
 Left for manual review, and still failing at **96**:
 

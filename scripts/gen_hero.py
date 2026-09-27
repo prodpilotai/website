@@ -7,8 +7,10 @@ ProdPilot checkout: the whole chain run on one sample project, with the rules
 failing before the fix loop, every fix contract in the order it was sent and
 whether the verifier confirmed it, and the rules still failing afterwards.
 
-The hero replays that run. Each rule of the sample's stack is one pillar, and
-pillars turn green in the order the verifier confirmed their fixes. The score at
+The hero replays that run. The rules that end it passing light up in the order
+the verifier confirmed their fixes; a rule that passes without a verified fix of
+its own, because another fix created the file it checks, comes last and is
+marked as such, so the page never counts it as a verified fix. The score at
 every step is computed with the audit's own formula and weights, and the script
 refuses to write anything unless its first and last scores equal the ones the
 run recorded, so the animation cannot drift from what happened.
@@ -63,10 +65,13 @@ def main(path: Path) -> None:
     rising = having(now, "pass") - passing
 
     order: list[str] = []
+    verified: set[str] = set()
     for step in run["applied"]:
         rid = step["rule_id"]
-        if step["verified"] and rid in rising and rid not in order:
-            order.append(rid)
+        if step["verified"]:
+            verified.add(rid)
+            if rid in rising and rid not in order:
+                order.append(rid)
     # A rule can pass by the end without its own contract verifying, for example
     # when a later fix created the file it checks, or when a fix made it apply.
     # It turns green last.
@@ -77,7 +82,8 @@ def main(path: Path) -> None:
     for rid in order:
         passing.add(rid)
         counted.add(rid)
-        steps.append({"rule": rid, "score": score(passing, counted, stack_rules)})
+        steps.append({"rule": rid, "score": score(passing, counted, stack_rules),
+                      "verified": rid in verified})
     last = steps[-1]["score"] if steps else first
     if first != run["start"]["score"] or last != run["gate"]["score"]:
         sys.exit(f"refusing to write: computed {first} to {last}, the run recorded "
@@ -94,12 +100,13 @@ def main(path: Path) -> None:
                    "text": r.description} for r in stack_rules],
         "start": {"score": first, "failing": sorted(before), "skipped": sorted(skipped),
                   "critical": run["start"]["blockers"]},
+        "verified": len(verified),
         "steps": steps,
         "end": {"score": last, "failing": sorted(after),
                 "skipped": sorted(having(now, "skipped")), "gate": run["gate"]["reason"]},
     }, indent=2) + "\n", encoding="utf-8")
-    print(f"wrote hero.json: {run['sample']}, {len(stack_rules)} rules, "
-          f"{first} to {last} in {len(steps)} verified fixes")
+    print(f"wrote hero.json: {run['sample']}, {len(stack_rules)} rules, {first} to {last}: "
+          f"{len(verified)} fixes verified, {len(steps)} rules passing that were not")
 
 
 if __name__ == "__main__":

@@ -13,7 +13,10 @@ const bands = [
 ];
 const band = (v: number) => bands.find((b) => v >= b.from)!.name;
 const end = hero.end.score;
-const fixed = hero.steps.length;
+// Fixes the verifier confirmed, and rules that pass without a fix of their own
+// because another fix created the file they check.
+const fixed = hero.verified;
+const carried = hero.steps.length - hero.verified;
 ---
 
 <figure class="stage" data-stage data-state="verified">
@@ -33,7 +36,8 @@ const fixed = hero.steps.length;
 	</div>
 	<figcaption class="sr-only">
 		A recorded ProdPilot run on the sample project {hero.sample}: the audit scored it {hero.start.score} out of 100
-		with {hero.start.critical.length} critical failures. {fixed} fixes were verified one by one, and the project
+		with {hero.start.critical.length} critical failures. {fixed} fixes were verified one by one, {carried} more rules
+		passed once other fixes created the files they check, and the project
 		finished at {end}, {band(end)}, and cleared the gate.
 	</figcaption>
 </figure>
@@ -278,12 +282,12 @@ const fixed = hero.steps.length;
 			hero.steps.forEach((s, i) => {
 				later(1200 + i * STEP, () => {
 					target = s.score;
-					show(s.score, `${s.rule} verified.`, 'checking');
+					show(s.score, s.verified ? `${s.rule} verified.` : `${s.rule} passes, its file now exists.`, 'checking');
 				});
 			});
 			later(1200 + hero.steps.length * STEP + 500, () => {
 				beamTarget = 1;
-				show(end, `Gate clear. ${hero.steps.length} fixes verified.`, 'verified');
+				show(end, `Gate clear. ${hero.verified} fixes verified.`, 'verified');
 				replay.hidden = false;
 			});
 		}
@@ -293,7 +297,7 @@ const fixed = hero.steps.length;
 			timers = [];
 			target = score = end;
 			beamTarget = beam = 1;
-			show(end, `Gate clear. ${hero.steps.length} fixes verified.`, 'verified');
+			show(end, `Gate clear. ${hero.verified} fixes verified.`, 'verified');
 		}
 
 		// ---- Loop --------------------------------------------------------

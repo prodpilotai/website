@@ -241,86 +241,107 @@
       "SEC-004"
     ]
   },
+  "verified": 18,
   "steps": [
     {
       "rule": "ENV-002",
-      "score": 22
+      "score": 22,
+      "verified": true
     },
     {
       "rule": "SEC-002",
-      "score": 31
+      "score": 31,
+      "verified": true
     },
     {
       "rule": "SEC-003",
-      "score": 40
+      "score": 40,
+      "verified": true
     },
     {
       "rule": "SEC-004",
-      "score": 49
+      "score": 49,
+      "verified": true
     },
     {
       "rule": "BLD-001",
-      "score": 53
+      "score": 53,
+      "verified": true
     },
     {
       "rule": "BLD-002",
-      "score": 58
+      "score": 58,
+      "verified": true
     },
     {
       "rule": "BLD-003",
-      "score": 62
+      "score": 62,
+      "verified": true
     },
     {
       "rule": "BLD-005",
-      "score": 66
+      "score": 66,
+      "verified": true
     },
     {
       "rule": "BLD-006",
-      "score": 71
+      "score": 71,
+      "verified": true
     },
     {
       "rule": "API-001",
-      "score": 73
+      "score": 73,
+      "verified": true
     },
     {
       "rule": "API-002",
-      "score": 75
+      "score": 75,
+      "verified": true
     },
     {
       "rule": "OBS-001",
-      "score": 76
+      "score": 76,
+      "verified": true
     },
     {
       "rule": "OBS-002",
-      "score": 76
+      "score": 76,
+      "verified": true
     },
     {
       "rule": "OBS-003",
-      "score": 77
+      "score": 77,
+      "verified": true
     },
     {
       "rule": "OBS-004",
-      "score": 77
+      "score": 77,
+      "verified": true
     },
     {
       "rule": "GIT-001",
-      "score": 78
+      "score": 78,
+      "verified": true
     },
     {
       "rule": "GIT-002",
-      "score": 78
+      "score": 78,
+      "verified": true
     },
     {
       "rule": "ENV-001",
-      "score": 80
+      "score": 80,
+      "verified": true
     },
     {
       "rule": "SCR-001",
-      "score": 88
+      "score": 88,
+      "verified": false
     },
     {
       "rule": "SEC-001",
-      "score": 96
+      "score": 96,
+      "verified": false
     }
   ],
   "end": {
