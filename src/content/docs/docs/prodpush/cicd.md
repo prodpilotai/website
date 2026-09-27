@@ -103,6 +103,17 @@ jobs:
 
 It waits for the very deploy it started, polled as [stage 6](/docs/prodpush/monitoring/) polls, before checking the service, because after a fixed wait the check could pass against the previous instance. For a React static site the check asks for the root instead of `/health`.
 
+## Observed on a live service
+
+An earlier version of this workflow redeployed the live demo from GitHub Actions. On 11 September 2026, ProdPilot deployed the demo, [sudais-khalid/prodpilot-demo](https://github.com/sudais-khalid/prodpilot-demo), and wired this stage; two later pushes to its `main` branch each ran the workflow, triggered a Render deploy and found the service answering on `/health`:
+
+| Run | Commit | Result |
+| --- | --- | --- |
+| [34652839494](https://github.com/sudais-khalid/prodpilot-demo/actions/runs/34652839494) | `53b8a14`, chore: prodpilot production setup | success |
+| [34654340484](https://github.com/sudais-khalid/prodpilot-demo/actions/runs/34654340484) | `3057cc4`, Describe the service at its root | success |
+
+That version triggered the deploy, waited a fixed 90 seconds, then checked `/health`, so its check could pass against the previous instance while the new deploy was still building. On 15 September it was changed to wait for the very deploy it started, the workflow shown above, and every release from 1.0.0rc1 on writes that version.
+
 ## Not yet observed
 
-The workflow and the secret sealing are covered by the test suite against scripted GitHub and Render APIs. The workflow redeploying a live service from GitHub Actions has not been observed end to end. Render's own automatic deploy also stays on, so a push can start a second deploy beside the workflow's; the workflow waits for the newer one. See [Known limitations](/docs/help/limitations/).
+The workflow as 1.0.0 writes it has not yet run against a live service. It and the secret sealing are covered by the test suite, which runs the workflow's own shell steps against scripted Render answers. Render's own automatic deploy also stays on, so a push can start a second deploy beside the workflow's; the workflow waits for the newer one. See [Known limitations](/docs/help/limitations/).

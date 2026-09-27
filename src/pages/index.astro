@@ -440,7 +440,9 @@ const proof = [
 					</li>
 					<li>
 						<strong>Not yet observed end to end on a live service:</strong> a deploy started by an IDE agent, and
-						the generated workflow redeploying from GitHub Actions.
+						the CI/CD workflow as 1.0.0 writes it. An earlier version, which waited a fixed 90 seconds, redeployed
+						the live demo from GitHub Actions twice; the current one waits for the deploy it started and has not
+						yet run against a live service.
 					</li>
 					<li>
 						<strong>It needs your machine.</strong> Docker running, Node.js 20 or later, git, a GitHub token and a

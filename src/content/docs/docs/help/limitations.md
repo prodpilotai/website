@@ -20,7 +20,7 @@ These are stated here so you do not have to find them the hard way. Each comes f
 The suite covers all of these against scripted GitHub and Render APIs. None has yet been seen end to end on a live service:
 
 - a deploy started by an IDE agent;
-- the generated CI/CD workflow redeploying a live service from GitHub Actions;
+- the CI/CD workflow as 1.0.0 writes it, redeploying a live service from GitHub Actions. An earlier version, which waited a fixed 90 seconds instead of for the deploy it started, did redeploy the live demo twice, in runs [34652839494](https://github.com/sudais-khalid/prodpilot-demo/actions/runs/34652839494) and [34654340484](https://github.com/sudais-khalid/prodpilot-demo/actions/runs/34654340484); see [CI/CD wiring](/docs/prodpush/cicd/#observed-on-a-live-service);
 - `prodpilot connect` inside Cursor and Devin.
 
 ## Recorded, not changed
