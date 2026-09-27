@@ -105,18 +105,22 @@ const layers = [
 	},
 ];
 
-// The section drawing beside the layers: the hero's pyramid cut through, one
-// band per layer, Detect at the base.
+// The section drawing beside the layers: the hero's pyramid cut through and
+// turned point down, one band per layer, so it reads top to bottom in the order
+// the layers run, like the list beside it. Detect is the widest band at the top;
+// the project narrows to ProdPush at the point.
 const BAND = 44;
-const BASE = 300;
+const WIDE = 300;
+const TOP = 12;
+const POINT = TOP + 5 * BAND;
 const drawing = layers.map((l) => {
-	const y1 = 250 - l.n * BAND;
-	const y0 = y1 - BAND;
-	const half = (y: number) => (BASE / 2) * ((y - 30) / 220);
+	const y0 = TOP + l.n * BAND;
+	const y1 = y0 + BAND;
+	const half = (y: number) => (WIDE / 2) * ((POINT - y) / (POINT - TOP));
 	return {
 		...l,
-		points: `${160 - half(y1)},${y1} ${160 + half(y1)},${y1} ${160 + half(y0)},${y0} ${160 - half(y0)},${y0}`,
-		label: y1 - BAND / 2 + 4,
+		points: `${160 - half(y0)},${y0} ${160 + half(y0)},${y0} ${160 + half(y1)},${y1} ${160 - half(y1)},${y1}`,
+		label: y0 + BAND / 2 + 4,
 	};
 });
 
@@ -259,12 +263,12 @@ const proof = [
 			<div class="split">
 				<header class="head">
 					<p class="label">How it works</p>
-					<h2 id="path-title">Five layers, built from the ground up</h2>
+					<h2 id="path-title">Five layers, in the order they run</h2>
 					<p class="intro">
-						Always in this order. Nothing moves to the next layer until the one below it holds.
+						Always in this order. Nothing moves to the next layer until the one before it holds.
 					</p>
 					<svg class="section-drawing" viewBox="0 0 320 262" aria-hidden="true">
-						<line class="floor" x1="0" y1="250.5" x2="320" y2="250.5" />
+						<line class="floor" x1="0" y1="11.5" x2="320" y2="11.5" />
 						{
 							drawing.map((d) => (
 								<g class={`band band-${d.n}`}>
@@ -277,7 +281,7 @@ const proof = [
 				</header>
 				<ol class="layers">
 					{
-						[...layers].reverse().map((l) => (
+						layers.map((l) => (
 							<li data-layer={l.n}>
 								<span class="num" aria-hidden="true">{l.n}</span>
 								<div>
