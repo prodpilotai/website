@@ -5,7 +5,7 @@
 // The cards are plain HTML rendered by Edge at 1200 by 630, in the site's own
 // fonts and colours. Every number on them is read from the generated data, so a
 // card cannot say something the site does not. The home card follows the
-// landing page; the docs card follows the docs.
+// landing page's hero, headline and recorded run; the docs card follows the docs.
 
 import { readFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -24,72 +24,72 @@ const font = (pkg, file) =>
 
 const end = hero.end.score;
 
-// ---- Home: the landing page's stone panel and night stage -----------------
+// ---- Home: the landing page's hero, headline first, the recorded run beside --
 
-// The stage's pyramid, projected with the same camera as the canvas.
-const HEIGHT = 1.35;
-const project = ([x, y, z], yaw = 0.6, pitch = 0.12, dist = 6, focal = 760, cx = 360, cy = 250) => {
-	const x1 = x * Math.cos(yaw) - z * Math.sin(yaw);
-	const z1 = x * Math.sin(yaw) + z * Math.cos(yaw);
-	const y2 = y * Math.cos(pitch) - z1 * Math.sin(pitch);
-	const z2 = y * Math.sin(pitch) + z1 * Math.cos(pitch);
-	const k = focal / (z2 + dist);
-	return [cx + x1 * k, cy - y2 * k];
+// The gauge, same geometry as the hero's.
+const R = 80;
+const C = { x: 100, y: 96 };
+const point = (v, r = R) => {
+	const t = Math.PI * (1 - v / 100);
+	return { x: C.x + r * Math.cos(t), y: C.y - r * Math.sin(t) };
 };
-const square = (y, s) => [[-s, y, -s], [s, y, -s], [s, y, s], [-s, y, s]];
-const poly = (pts, closed) => pts.map((p) => project(p)).map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' ') + (closed ? ' Z' : '');
-const lines = [
-	...[0, 1, 2, 3, 4].map((k) => {
-		const y = (k / 5) * HEIGHT;
-		return poly(square(y, 1 - y / HEIGHT), true);
-	}),
-	...square(0, 1).map((c) => poly([c, [0, HEIGHT, 0]], false)),
-];
-const slab = [poly(square(-0.04, 1.14), true), poly(square(-0.2, 1.14), true)];
-const [bx, by] = project([0, -0.2, 0]);
-const [fx, fy] = project([0, -1.05, 0]);
-const pyramid = `
-<svg viewBox="0 0 700 520" width="700" height="520" aria-hidden="true">
-	<defs>
-		<linearGradient id="beam" x1="0" y1="0" x2="0" y2="1">
-			<stop offset="0" stop-color="#fff0d2" stop-opacity="0.55"/>
-			<stop offset="1" stop-color="#ffd696" stop-opacity="0.08"/>
-		</linearGradient>
-		<radialGradient id="pool">
-			<stop offset="0" stop-color="#fff0d6" stop-opacity="0.85"/>
-			<stop offset="0.3" stop-color="#ecbe78" stop-opacity="0.3"/>
-			<stop offset="1" stop-color="#ecbe78" stop-opacity="0"/>
-		</radialGradient>
-		<filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3.5"/></filter>
-	</defs>
-	<path d="M${bx - 40} ${by} L${bx + 40} ${by} L${fx + 70} ${fy} L${fx - 70} ${fy} Z" fill="url(#beam)"/>
-	<ellipse cx="${fx}" cy="${fy}" rx="260" ry="70" fill="url(#pool)"/>
-	${slab.map((d) => `<path d="${d}" fill="#0c0b0a" stroke="rgba(255,238,205,0.2)"/>`).join('')}
-	<g fill="none" stroke-linecap="round" stroke-linejoin="round">
-		<g stroke="#d6a052" stroke-opacity="0.55" stroke-width="5" filter="url(#glow)">${lines.map((d) => `<path d="${d}"/>`).join('')}</g>
-		<g stroke="#ffeecd" stroke-width="1.4">${lines.map((d) => `<path d="${d}"/>`).join('')}</g>
-	</g>
+const arc = (from, to, r = R) => {
+	const p = point(from, r);
+	const q = point(to, r);
+	return `M ${p.x.toFixed(2)} ${p.y.toFixed(2)} A ${r} ${r} 0 0 1 ${q.x.toFixed(2)} ${q.y.toFixed(2)}`;
+};
+const gauge = `
+<svg viewBox="0 0 200 108" width="220" height="119" aria-hidden="true">
+	${[[0, 39], [40, 69], [70, 89], [90, 100]].map(([a, b]) => `<path d="${arc(a + 0.8, b - 0.8)}" fill="none" stroke="rgba(239,232,222,0.12)" stroke-width="9"/>`).join('')}
+	<path d="${arc(0.01, end)}" fill="none" stroke="#45d483" stroke-width="9" stroke-linecap="round"/>
 </svg>`;
+
+// Four rows that between them show every way a rule ended the run.
+const text = Object.fromEntries(hero.rules.map((r) => [r.id, r.text]));
+const verified = hero.steps.filter((s) => s.verified);
+const carried = hero.steps.filter((s) => !s.verified);
+const sample = [
+	{ id: verified[0].rule, said: 'verified', ok: true },
+	{ id: verified[1].rule, said: 'verified', ok: true },
+	{ id: carried[0].rule, said: 'passes, file exists', ok: true },
+	{ id: hero.end.failing[0], said: 'manual review', ok: false },
+];
+const rows = sample
+	.map((r) => `<li class="${r.ok ? 'ok' : 'bad'}"><i></i><b>${r.id}</b><span>${text[r.id]}</span><em>${r.said}</em></li>`)
+	.join('');
+const gateLine = `Gate clear: ${hero.end.gate.split(',')[0]}.`;
 
 const homeCss = `
 @font-face { font-family: 'Newsreader'; font-weight: 200 800; src: url(${font('@fontsource-variable/newsreader', 'newsreader-latin-opsz-normal.woff2')}); }
 @font-face { font-family: 'Newsreader'; font-style: italic; font-weight: 200 800; src: url(${font('@fontsource-variable/newsreader', 'newsreader-latin-opsz-italic.woff2')}); }
 @font-face { font-family: 'IBM Plex Mono'; font-weight: 400; src: url(${font('@fontsource/ibm-plex-mono', 'ibm-plex-mono-latin-400-normal.woff2')}); }
+@font-face { font-family: 'IBM Plex Sans'; font-weight: 400; src: url(${font('@fontsource/ibm-plex-sans', 'ibm-plex-sans-latin-400-normal.woff2')}); }
 * { box-sizing: border-box; margin: 0; }
-body { width: 1200px; height: 630px; background: #0a0908; padding: 14px; font-family: sans-serif; display: grid; grid-template-columns: 430px 1fr; gap: 14px; }
-.side { background: #d8cec2; color: #1c1814; border-radius: 16px; padding: 38px 40px; display: flex; flex-direction: column; justify-content: space-between; }
-.brand { display: flex; align-items: center; gap: 12px; font-family: 'Newsreader'; font-size: 32px; }
-.brand svg { width: 44px; height: 44px; }
-h1 { font-family: 'Newsreader'; font-weight: 360; font-size: 58px; line-height: 1; letter-spacing: -1.3px; }
-h1 em { display: block; font-style: italic; font-weight: 330; color: #574d43; margin-top: 8px; }
-.cmd { font-family: 'IBM Plex Mono'; font-size: 19px; padding: 12px 16px; border: 1px solid rgba(28,24,20,0.2); border-radius: 8px; background: rgba(28,24,20,0.05); }
-.stage { position: relative; background: radial-gradient(60% 55% at 50% 58%, rgba(226,189,121,0.08), transparent 70%), #0f0e0c; border-radius: 16px; overflow: hidden; }
-.stage svg { position: absolute; left: 34px; top: 40px; }
-.read { position: absolute; left: 34px; top: 34px; font-family: 'IBM Plex Mono'; color: #aaa196; font-size: 14px; letter-spacing: 1px; }
-.score { font-family: 'Newsreader'; font-weight: 300; font-size: 76px; color: #efe8de; line-height: 1; margin-top: 10px; letter-spacing: -2px; }
-.score small { font-size: 24px; color: #aaa196; letter-spacing: 0; }
-.band { color: #45d483; margin-top: 8px; font-size: 15px; letter-spacing: 2px; }
-.foot { position: absolute; left: 34px; right: 34px; bottom: 30px; font-family: 'IBM Plex Mono'; font-size: 16px; color: #aaa196; display: flex; justify-content: space-between; }
+body { width: 1200px; height: 630px; background: #0a0908; padding: 14px; display: grid; grid-template-columns: 640px 1fr; gap: 14px; font-family: 'IBM Plex Sans', sans-serif; }
+.side { background: #d8cec2; color: #1c1814; border-radius: 16px; padding: 38px 44px; display: flex; flex-direction: column; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 12px; font-family: 'Newsreader'; font-size: 30px; }
+.brand svg { width: 40px; height: 40px; }
+h1 { font-family: 'Newsreader'; font-weight: 340; font-size: 74px; line-height: 0.96; letter-spacing: -2.4px; }
+h1 em { display: block; font-style: italic; font-weight: 320; color: #574d43; margin-top: 6px; }
+.cmd { font-family: 'IBM Plex Mono'; font-size: 20px; padding: 13px 16px; border: 1px solid rgba(28,24,20,0.2); border-radius: 8px; background: rgba(28,24,20,0.05); align-self: flex-start; }
+.stage { background: radial-gradient(70% 55% at 40% 40%, rgba(226,189,121,0.07), transparent 70%), #0f0e0c; border-radius: 16px; padding: 30px 30px 26px; display: flex; flex-direction: column; gap: 18px; color: #efe8de; }
+.head { font-family: 'IBM Plex Mono'; font-size: 13px; letter-spacing: 1.5px; color: #aaa196; }
+.head b { font-weight: 400; color: #efe8de; letter-spacing: 0; margin-left: 8px; }
+.dial { display: flex; align-items: center; gap: 22px; }
+.score { font-family: 'Newsreader'; font-weight: 300; font-size: 70px; line-height: 1; letter-spacing: -2px; }
+.score small { font-size: 22px; color: #aaa196; letter-spacing: 0; }
+.band { font-family: 'IBM Plex Mono'; font-size: 14px; letter-spacing: 1.5px; color: #45d483; margin-top: 6px; }
+ul { list-style: none; padding: 0; border-top: 1px solid rgba(239,232,222,0.12); }
+li { display: grid; grid-template-columns: 10px 76px 1fr auto; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(239,232,222,0.08); font-size: 14px; }
+li i { width: 8px; height: 8px; border-radius: 50%; }
+li.ok i { background: #45d483; box-shadow: 0 0 8px #45d483aa; }
+li.bad i { background: #ff6b61; box-shadow: 0 0 8px #ff6b61aa; }
+li b { font-family: 'IBM Plex Mono'; font-weight: 400; font-size: 13px; }
+li span { color: #aaa196; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+li em { font-style: normal; font-family: 'IBM Plex Mono'; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+li.ok em { color: #45d483; }
+li.bad em { color: #ff6b61; }
+.gate { margin-top: auto; font-family: 'IBM Plex Mono'; font-size: 14px; color: #45d483; line-height: 1.45; }
 `;
 
 const home = `<!doctype html><html><head><meta charset="utf-8"><style>${homeCss}</style></head><body>
@@ -99,9 +99,10 @@ const home = `<!doctype html><html><head><meta charset="utf-8"><style>${homeCss}
 	<p class="cmd">$ pip install prodpilot</p>
 </div>
 <div class="stage">
-	${pyramid}
-	<div class="read">RECORDED RUN<p class="score">${end}<small>/100</small></p><p class="band">PRODUCTION READY</p></div>
-	<p class="foot"><span>${hero.sample}, ${hero.start.score} to ${end}</span></p>
+	<p class="head">RECORDED RUN<b>${hero.sample}</b></p>
+	<div class="dial">${gauge}<div><p class="score">${end}<small>/100</small></p><p class="band">PRODUCTION READY</p></div></div>
+	<ul>${rows}</ul>
+	<p class="gate">${gateLine}<br><span style="color:#aaa196">${hero.verified} verified, ${hero.steps.length - hero.verified} pass once their file exists, ${hero.end.failing.length} left for review</span></p>
 </div>
 </body></html>`;
 
