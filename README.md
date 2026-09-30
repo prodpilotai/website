@@ -28,7 +28,7 @@ scripts/
   og.mjs                social preview images and touch icon
   requirements.txt      the ProdPilot version the generated pages are pinned to
 src/
-  components/           landing page parts: Hero, Command, LiveCheck, Seo
+  components/           landing page parts: Run, Command, LiveCheck, Motion, Seo
   content/docs/docs/    the documentation, one Markdown file per page
   data/                 generated data: reference.json, hero.json, demo.json, facts.ts
   layouts/Landing.astro the landing page shell

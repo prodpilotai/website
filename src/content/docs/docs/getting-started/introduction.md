@@ -41,7 +41,7 @@ GET /api/v1    200  {"name":"prodpilot-demo","version":"1.0.0"}
 GET /metrics   200  process metrics in the Prometheus text format
 ```
 
-Every response carried `content-security-policy`, `strict-transport-security`, `x-content-type-options`, `x-frame-options` and `referrer-policy`. It runs on Render's free plan, so the first request after a quiet spell is slow while the service wakes. The [landing page](/#live-title) checks it again from your browser.
+Every response carried `content-security-policy`, `strict-transport-security`, `x-content-type-options`, `x-frame-options` and `referrer-policy`. It runs on Render's free plan, so the first request after a quiet spell is slow while the service wakes. The [landing page](/#proof) checks it again from your browser.
 
 ## Where to go next
 
