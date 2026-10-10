@@ -90,7 +90,7 @@ The contract itself has been checked in real clients: the agents of VS Code with
 
 ## One run in detail
 
-The run the landing page replays. The `node_express_insecure` sample, taken through the whole chain by ProdPilot 1.0.0 with `python tests/pipeline.py TRACE.json node_express_insecure`. Its 28 Express rules at the start: 22 failing, 3 skipped, and 6 critical failures, **score 13**.
+The run the landing page replays. The `node_express_insecure` sample, taken through the whole chain by ProdPilot 1.1.0 with `python tests/pipeline.py TRACE.json node_express_insecure`. 1.0.0 gave the same run, rule for rule. Its 28 Express rules at the start: 22 failing, 3 skipped, and 6 critical failures, **score 13**.
 
 The loop sent 33 fix contracts over two cycles, and the verifier confirmed 18 of them, one for each of 18 rules. Each row below is a rule that ended the run passing, with the score after it, computed with the audit's own weights: first the 18 whose own fix was verified, in the order it was, then the two that pass without one.
 

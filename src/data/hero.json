@@ -1,7 +1,7 @@
 {
   "sample": "node_express_insecure",
   "stack": "node_express",
-  "prodpilot": "1.0.0",
+  "prodpilot": "1.1.0",
   "command": "python tests/pipeline.py TRACE.json node_express_insecure",
   "rules": [
     {
