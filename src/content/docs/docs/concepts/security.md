@@ -47,4 +47,4 @@ The generated workflow triggers each deploy through Render's API, so it needs yo
 
 ## Reporting a vulnerability
 
-Report it privately through the repository's [Security tab](https://github.com/prodpilotai/ProdPilot/security), never in a public issue. Include what you did, what happened, and the version `pip show prodpilot` reports. Version 1.0.0rc1 and later 1.0 releases are supported.
+Report it privately through the repository's [Security tab](https://github.com/prodpilotai/ProdPilot/security), never in a public issue. Include what you did, what happened, and the version `pip show prodpilot` reports. Version 1.1.0 and later 1.1 releases are supported. On 1.0, upgrade to 1.1, which changes no rule, score or gate decision.

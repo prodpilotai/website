@@ -7,7 +7,7 @@ Stage 4 stages the files ProdPilot generated, commits them as `chore: prodpilot 
 
 ## Only the generated files
 
-The list is built from the templates and fix shapes that create files, so it grows with them and is never written out by hand. In 1.0.0 it is:
+The list is built from the templates and fix shapes that create files, so it grows with them and is never written out by hand. In 1.1.0, as in 1.0.0, it is:
 
 ```text
 .dockerignore

@@ -40,7 +40,7 @@ The stack blueprint for an Express project is 10.9 KB, over the Copilot agent's 
 
 ### The version says 1.0.0rc1
 
-In 1.0.0 the server reports `1.0.0rc1` in its ping response and handshake, because the version string inside the package was not raised at release. The package is 1.0.0, which `pip show prodpilot` confirms.
+In 1.0.0 the server reports `1.0.0rc1` in its ping response and handshake, because the version string inside the package was not raised at release. The package is 1.0.0, which `pip show prodpilot` confirms. 1.1.0 fixes this: upgrade, and the ping and `prodpilot --version` both report 1.1.0.
 
 ## Credentials
 

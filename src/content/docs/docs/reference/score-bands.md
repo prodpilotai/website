@@ -41,7 +41,7 @@ Halving keeps one P0 rule worth more than every P5 rule in the ruleset combined.
 | --- | --- |
 | Minimum score | 90 |
 | Critical (P0) rules failing | 0 |
-| Model estimate | At or above the operating point stored with the model, 0.369 in 1.0.0 |
+| Model estimate | At or above the operating point stored with the model, 0.369 in 1.0.0 and 1.1.0 |
 | Retry budget | 3 attempts per issue, across the whole run |
 | Cycle ceiling | 5 |
 

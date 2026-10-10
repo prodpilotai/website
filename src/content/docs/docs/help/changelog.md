@@ -1,9 +1,35 @@
 ---
 title: Changelog
-description: What changed in each ProdPilot release, from the first release candidate to 1.0.0.
+description: What changed in each ProdPilot release, from the first release candidate to 1.1.0.
 ---
 
 The source is [CHANGELOG.md](https://github.com/prodpilotai/ProdPilot/blob/main/CHANGELOG.md). Releases are on [PyPI](https://pypi.org/project/prodpilot/) and [GitHub](https://github.com/prodpilotai/ProdPilot/releases).
+
+## 1.1.0, 10 October 2026
+
+A hardening release. The ruleset, scoring, model and gate are unchanged from 1.0.0.
+
+### Added
+
+- `prodpilot audit` for CI, with `--ci`, `--min-score`, `--fail-on` and `--baseline`, and exit codes 0, 1 and 2.
+- `prodpilot report --format sarif|md|html`, with SARIF for GitHub code scanning.
+- The GitHub Action `prodpilotai/ProdPilot@v1`.
+- `prodpilot fix --dry-run`, and an optional `dry_run` on `prodpilot_fix_instruction`.
+- `prodpilot deploy [--no-rollback]`, and an optional `rollback` on `prodpilot_deploy`.
+- Rollback of a redeploy that fails its smoke test.
+- An end-of-life notice for the declared Node version.
+- `prodpilot --version`.
+
+### Changed
+
+- Rollback is on by default.
+- A project already deployed is redeployed to its service instead of getting a second one.
+- Generated Dockerfiles and workflows use the declared Node LTS line, Node 24 by default, instead of Node 20.
+
+### Fixed
+
+- A second deploy stopped at the push stage when the only untracked file was `.env.prodpilot`.
+- The package reported its version as `1.0.0rc1`.
 
 ## 1.0.0, 20 September 2026
 

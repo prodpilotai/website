@@ -1,6 +1,6 @@
 ---
 title: Known limitations
-description: What ProdPilot 1.0.0 does not do, what has not been measured, and the failure paths that are recorded rather than changed.
+description: What ProdPilot 1.1.0 does not do, what has not been measured, and the failure paths that are recorded rather than changed.
 ---
 
 These are stated here so you do not have to find them the hard way. Each comes from the project's own records.
@@ -9,7 +9,7 @@ These are stated here so you do not have to find them the hard way. Each comes f
 
 - **Two stacks.** Node.js with Express, and React with Vite. A project declaring both is refused rather than guessed at. Other stacks are unrecognised by design.
 - **One deployment target.** Render, with Express projects on the free plan. The [provider interface](/docs/prodpush/provider/) means another target would not need a rewrite, but none exists.
-- **Three tested clients.** VS Code with Copilot, Cursor, and Windsurf, now Devin. Other MCP clients were not tested.
+- **Three tested clients.** VS Code with Copilot, Cursor, and Windsurf, now Devin, each connected with `prodpilot connect` and checked again with 1.1.0. Claude Code, connected by hand because `prodpilot connect` does not write its configuration, was also seen working with 1.1.0. Other MCP clients were not tested.
 
 ## Not measured
 
@@ -17,11 +17,14 @@ These are stated here so you do not have to find them the hard way. Each comes f
 
 ## Not yet observed on real services
 
-The suite covers all of these against scripted GitHub and Render APIs. None has yet been seen end to end on a live service:
+The suite covers this against scripted GitHub and Render APIs, but it has not yet been seen end to end on a live service:
 
-- a deploy started by an IDE agent;
-- the CI/CD workflow as 1.0.0 writes it, redeploying a live service from GitHub Actions. An earlier version, which waited a fixed 90 seconds instead of for the deploy it started, did redeploy the live demo twice, in runs [34652839494](https://github.com/sudais-khalid/prodpilot-demo/actions/runs/34652839494) and [34654340484](https://github.com/sudais-khalid/prodpilot-demo/actions/runs/34654340484); see [CI/CD wiring](/docs/prodpush/cicd/#observed-on-a-live-service);
-- `prodpilot connect` inside Cursor and Devin.
+- a deploy started by an IDE agent.
+
+Seen on the live demo for 1.1.0, on 10 October 2026:
+
+- the CI/CD workflow ProdPilot writes, redeploying the service from GitHub Actions: deploy `dep-db4udenlot8c73d2915g` was live in 39 seconds, in run [38033962767](https://github.com/sudais-khalid/prodpilot-demo/actions/runs/38033962767); see [CI/CD wiring](/docs/prodpush/cicd/#observed-on-a-live-service);
+- a broken redeploy rolled back to the previous version and healthy again in 16.6 seconds; see [Rollback](/docs/prodpush/rollback/).
 
 ## Recorded, not changed
 
@@ -32,7 +35,8 @@ The suite covers all of these against scripted GitHub and Render APIs. None has 
 - **Your own Dockerfile running `npm ci` with no lockfile.** No audit rule checks for this, and the build stage reports it only as "build failed, missing dependency". ProdPilot's own generated Dockerfiles use `npm install` when there is no lockfile.
 - **A second deploy.** Render's own automatic deploy stays on, so a push can start a deploy beside the workflow's; the workflow waits for the newer one.
 - **The model rests mostly on the build.** On held out projects the estimate is mostly whether the project builds; the audit's failure counts add little measurable ranking. The audit keeps its role through the score and the critical rule condition. See [Evaluation](/docs/results/evaluation/#what-the-model-relies-on).
-- **The version string.** 1.0.0 reports `1.0.0rc1` in its ping response and handshake.
+- **Node 20 pins.** Rule BLD-005 belongs to the frozen 1.x ruleset and still asks for a Node 20 pin, though Node 20 reached end of life on 30 April 2026. Generated Dockerfiles and workflows use Node 24 unless the project declares another LTS line, and an end-of-life declaration gets a notice that never changes the score.
+- **Rollback needs a recent build.** Render keeps builds for a limited number of recent deploys, so an old deploy may no longer be available to roll back to. In the live test, Render refused a rollback to a deploy a month old.
 
 ## What 1.x does not promise
 
