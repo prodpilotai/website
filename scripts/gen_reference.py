@@ -224,13 +224,21 @@ def tools_page(today: str, tools, samples: dict) -> str:
         "these names and descriptions. The descriptions below are the ones the agent "
         "reads, copied from the registration rather than paraphrased.",
         "",
-        ":::note",
-        f"In {VERSION} the server reports its own version as `1.0.0rc1`, in the ping "
-        "response and the protocol handshake: the version string inside the package "
-        "was not raised when the release was cut. The package itself is "
-        f"{VERSION}, which is what `pip show prodpilot` reports.",
-        ":::",
-        "",
+    ]
+    # 1.0.0 shipped with its version string still at 1.0.0rc1. The note is
+    # written only while the server's own answer and the package disagree.
+    reported = samples["prodpilot_ping"][0][1].get("version")
+    if reported != VERSION:
+        lines += [
+            ":::note",
+            f"In {VERSION} the server reports its own version as `{reported}`, in the "
+            "ping response and the protocol handshake: the version string inside the "
+            "package was not raised when the release was cut. The package itself is "
+            f"{VERSION}, which is what `pip show prodpilot` reports.",
+            ":::",
+            "",
+        ]
+    lines += [
         "The hints tell a client what a tool does to its environment. The protocol "
         "makes them hints, not a guard: a client may ignore them, which is why the "
         "deploy tool's description also asks the agent to confirm with you first.",

@@ -1,11 +1,11 @@
 ---
 title: Rule catalog
-description: All 50 rules in the frozen ProdPilot 1.0.0 ruleset, grouped by domain, with each rule's stack, priority, check and fix type.
+description: All 50 rules in the frozen ProdPilot 1.1.0 ruleset, grouped by domain, with each rule's stack, priority, check and fix type.
 ---
 
-<p class="pp-stamp">Generated from prodpilot 1.0.0 on 2026-09-25 by <code>scripts/gen_reference.py</code>. Do not edit this page by hand; run the script again when the package changes.</p>
+<p class="pp-stamp">Generated from prodpilot 1.1.0 on 2026-10-10 by <code>scripts/gen_reference.py</code>. Do not edit this page by hand; run the script again when the package changes.</p>
 
-ProdPilot 1.0.0 checks **50 rules**: 28 for Node.js with Express and 22 for React with Vite. A project is audited against the rules for its own stack only.
+ProdPilot 1.1.0 checks **50 rules**: 28 for Node.js with Express and 22 for React with Vite. A project is audited against the rules for its own stack only.
 
 | Fix type | Rules |
 | --- | --- |

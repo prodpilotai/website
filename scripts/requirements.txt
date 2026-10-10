@@ -1,1 +1,1 @@
-prodpilot==1.0.0
+prodpilot==1.1.0

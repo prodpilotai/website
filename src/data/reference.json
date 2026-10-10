@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "generated": "2026-09-25",
+  "version": "1.1.0",
+  "generated": "2026-10-10",
   "rules": 50,
   "by_stack": {
     "node_express": 28,

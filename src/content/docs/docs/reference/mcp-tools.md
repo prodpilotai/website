@@ -1,15 +1,11 @@
 ---
 title: MCP tools
-description: The 5 tools the ProdPilot 1.0.0 MCP server registers, with their arguments, hints and real example responses.
+description: The 5 tools the ProdPilot 1.1.0 MCP server registers, with their arguments, hints and real example responses.
 ---
 
-<p class="pp-stamp">Generated from prodpilot 1.0.0 on 2026-09-25 by <code>scripts/gen_reference.py</code>. Do not edit this page by hand; run the script again when the package changes.</p>
+<p class="pp-stamp">Generated from prodpilot 1.1.0 on 2026-10-10 by <code>scripts/gen_reference.py</code>. Do not edit this page by hand; run the script again when the package changes.</p>
 
 The server registers **5 tools**. Your editor's agent sees exactly these names and descriptions. The descriptions below are the ones the agent reads, copied from the registration rather than paraphrased.
-
-:::note
-In 1.0.0 the server reports its own version as `1.0.0rc1`, in the ping response and the protocol handshake: the version string inside the package was not raised when the release was cut. The package itself is 1.0.0, which is what `pip show prodpilot` reports.
-:::
 
 The hints tell a client what a tool does to its environment. The protocol makes them hints, not a guard: a client may ignore them, which is why the deploy tool's description also asks the agent to confirm with you first.
 
@@ -29,7 +25,7 @@ Hints: read only: yes, reaches outside this machine: no.
 {
   "status": "ok",
   "server": "prodpilot",
-  "version": "1.0.0rc1",
+  "version": "1.1.0",
   "transport": "stdio",
   "detail": "ProdPilot MCP server is running. Stack detection, the fix loop, and deployment are available."
 }
@@ -99,7 +95,16 @@ Abridged for this page: each blueprint list shows its first item. The full respo
         "priority": "P0"
       }
     ],
-    "not_applicable_domains": []
+    "not_applicable_domains": [],
+    "node": {
+      "declared": [],
+      "source": null,
+      "spec": null,
+      "image_major": 24,
+      "candidates": [],
+      "detail": "no Node version is declared, so the image uses Node 24"
+    },
+    "notices": []
   }
 }
 ```
@@ -108,12 +113,13 @@ Abridged for this page: each blueprint list shows its first item. The full respo
 
 **Get the fix instruction for one failing rule**
 
-> Return the fix contract for one rule that the audit reports as failing. The form depends on the rule. A content contract carries the exact change to make, with the file, the anchor, and the content, and must be applied exactly as given with no other edit. A constraint contract carries a requirement, a boundary, and a list of things that must not change, and you author the minimal change yourself within that boundary. Reads the project and changes nothing on disk. After applying the change, report it with prodpilot_fix_applied.
+> Return the fix contract for one rule that the audit reports as failing. The form depends on the rule. A content contract carries the exact change to make, with the file, the anchor, and the content, and must be applied exactly as given with no other edit. A constraint contract carries a requirement, a boundary, and a list of things that must not change, and you author the minimal change yourself within that boundary. Reads the project and changes nothing on disk. After applying the change, report it with prodpilot_fix_applied. With dry_run true it also returns a preview: the change as a unified diff, in the order the fix loop would reach it, for the developer to review before you apply it.
 
 | Argument | Type | Required | Default |
 | --- | --- | --- | --- |
 | `project_path` | string | yes |  |
 | `rule_id` | string | yes |  |
+| `dry_run` | boolean | no | `false` |
 
 Hints: read only: yes, reaches outside this machine: no.
 
@@ -223,12 +229,13 @@ Hints: read only: yes, reaches outside this machine: no.
 
 **Deploy a project that passes the scoring gate**
 
-> Run the ProdPush pipeline on a project: the scoring gate, pre-flight checks, environment sealing, a local Docker build test, a push of the generated files, a Render deployment, deploy monitoring, a post-deploy smoke test, and CI/CD wiring. Stops at the first stage that fails and says which one and why. This creates a real Render service and pushes to the project's GitHub repository, so confirm with the developer before calling it. Commit your own changes first: a working tree holding uncommitted changes outside ProdPilot's generated files is not deployed.
+> Run the ProdPush pipeline on a project: the scoring gate, pre-flight checks, environment sealing, a local Docker build test, a push of the generated files, a Render deployment, deploy monitoring, a post-deploy smoke test, and CI/CD wiring. Stops at the first stage that fails and says which one and why. This creates a real Render service and pushes to the project's GitHub repository, so confirm with the developer before calling it. Commit your own changes first: a working tree holding uncommitted changes outside ProdPilot's generated files is not deployed. A project already deployed by ProdPilot is redeployed to its existing service, and if the smoke test then fails the service is rolled back to its previous live deploy unless rollback is false.
 
 | Argument | Type | Required | Default |
 | --- | --- | --- | --- |
 | `project_path` | string | yes |  |
 | `branch` | string | no | `"main"` |
+| `rollback` | boolean | no | `true` |
 
 Hints: read only: no, destructive: yes, idempotent: no, reaches outside this machine: yes.
 
@@ -297,6 +304,7 @@ Hints: read only: no, destructive: yes, idempotent: no, reaches outside this mac
       "detail": "not reached"
     }
   ],
+  "rollback": null,
   "summary": "node_express_insecure: stopped at scoring gate, score 13 but 6 critical rule(s) still fail: ENV-002, SCR-001, SEC-001, SEC-002, SEC-003, SEC-004"
 }
 ```
