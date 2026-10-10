@@ -30,30 +30,34 @@ The package is [`prodpilot` on PyPI](https://pypi.org/project/prodpilot/).
 
 pipx and uv are recommended because ProdPilot is a command line tool: they keep it and its dependencies in their own environment, so it cannot clash with the packages of the project you are working on. That matters here because ProdPilot pins scikit-learn to 1.9.0, the version that saved the model it ships, and only that version is guaranteed to read the model.
 
-To pin the release this site describes, ask for `prodpilot==1.0.0`.
+To pin the release this site describes, ask for `prodpilot==1.1.0`.
 
 ## Check the install
 
 ```text
 $ prodpilot --help
-
  Usage: prodpilot [OPTIONS] COMMAND [ARGS]...
 
  ProdPilot MCP server.
 
-+- Options ---------------------------------------------------------------------------+
-| --help          Show this message and exit.                                         |
-+-------------------------------------------------------------------------------------+
-+- Commands --------------------------------------------------------------------------+
-| serve    Serve the ProdPilot MCP server over stdio.                                 |
-| setup    Store the GitHub token and Render API key for this developer.              |
-| doctor   Report whether ProdPilot's prerequisites are in place.                     |
-| connect  Connect an IDE's agent to ProdPilot, naming this machine's prodpilot       |
-|          command.                                                                   |
-+-------------------------------------------------------------------------------------+
++- Options --------------------------------------------------------------------------+
+| --version          Print the installed version and exit.                           |
+| --help             Show this message and exit.                                     |
++------------------------------------------------------------------------------------+
++- Commands -------------------------------------------------------------------------+
+| serve    Serve the ProdPilot MCP server over stdio.                                |
+| setup    Store the GitHub token and Render API key for this developer.             |
+| doctor   Report whether ProdPilot's prerequisites are in place.                    |
+| connect  Connect an IDE's agent to ProdPilot, naming this machine's prodpilot      |
+|          command.                                                                  |
+| audit    Audit a project read-only and check it is ready.                          |
+| fix      Preview the fix loop's changes without writing anything.                  |
+| deploy   Run the nine deploy stages, as the prodpilot_deploy tool does.            |
+| report   Audit a project read-only and write a report.                             |
++------------------------------------------------------------------------------------+
 ```
 
-That is the real output of version 1.0.0. `pip show prodpilot` reports the installed version.
+That is the real output of version 1.1.0. `prodpilot --version` prints the installed version.
 
 ## Upgrade
 

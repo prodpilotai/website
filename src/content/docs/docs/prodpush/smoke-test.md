@@ -47,3 +47,5 @@ Run on 25 September 2026 against [prodpilot-demo.onrender.com](https://prodpilot
 ```
 
 Any one failed check leaves the deployment unconfirmed, and the report names which check and why. A service that answers `/health` but leaks a stack trace is not partly deployed: it should not be trusted.
+
+On a redeploy, a failed smoke test is followed by a [rollback](/docs/prodpush/rollback/) to the previous version, unless rollback is turned off.

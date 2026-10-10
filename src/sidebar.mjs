@@ -21,6 +21,7 @@ export const sidebar = [
 					page('Windsurf (now Devin)', 'getting-started/windsurf'),
 				],
 			},
+			page('Use in CI', 'getting-started/ci'),
 		],
 	},
 	{
@@ -46,6 +47,7 @@ export const sidebar = [
 			page('5. Render deployment', 'prodpush/render-deploy'),
 			page('6. Deploy monitoring', 'prodpush/monitoring'),
 			page('7. Post-deploy smoke test', 'prodpush/smoke-test'),
+			page('Rollback', 'prodpush/rollback'),
 			page('8. CI/CD wiring', 'prodpush/cicd'),
 			page('Provider interface', 'prodpush/provider'),
 		],

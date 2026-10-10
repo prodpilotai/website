@@ -1,9 +1,11 @@
 ---
 title: 5. Render deployment
-description: Stage 5 creates the Render service from your GitHub repository, passes your sealed values through the API, and stores the identifiers it gets back.
+description: Stage 5 creates the Render service from your GitHub repository, or redeploys the one ProdPilot created before, and stores the identifiers it gets back.
 ---
 
 Stage 5 creates a service on Render from the repository stage 4 pushed to, and starts its first deploy. Render is the only deployment target in version 1.
+
+Since 1.1.0, a project whose `.env.prodpilot` names a service that still exists is redeployed: the pushed commit is deployed to that service instead of a second one being created, and the service's environment values on Render are left as they are. A project with no stored service, or whose stored service was deleted, gets a new one, as below. If a redeploy then fails the smoke test, the service is [rolled back](/docs/prodpush/rollback/).
 
 ## How each stack is deployed
 
